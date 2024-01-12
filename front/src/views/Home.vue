@@ -7,6 +7,7 @@
     
     <UserList></UserList>
   </v-menu>
+  <Map></Map>
   <ChatList></ChatList>
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
@@ -29,6 +30,7 @@
 import UserList from "@/components/UserList.vue";
 import BoardList from "@/components/BoardList.vue";
 import ChatList from "@/components/ChatList.vue";
+import Map from "@/components/Map.vue"; 
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
@@ -43,7 +45,6 @@ onMounted(() => {
   //   console.log(data.msg);
   //   testText.value = data.msg;
   // });
-
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
