@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { createServer } = require("http");
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 app.get('/api/public/board', (req, res) => {
@@ -14,10 +16,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
-var server = createServer(app);
 
+var options = {
+    key: fs.readFileSync(path.join('../../SSL/www_jesusdream.kr.key')),
+    cert: fs.readFileSync(path.join('../../SSL/www_jesusdream.kr_cert.crt')),
+};
+
+http.createServer(app).listen(8000, () =>{
+    console.log(`server start! port:8000`)
+});
+var server = https.createServer(options, app)
+        
 require('./modules/socketConfig')(server, app);
 
-server.listen(8000,()=>{
-    console.log("server 8000")
+server.listen(8443, ()=>{
+    console.log(`server start! port:8443`)
 });
