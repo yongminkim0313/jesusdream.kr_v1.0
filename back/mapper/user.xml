@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="user">  
+  <select id="selectUser">
+    select kakao_id, nickname, thumbnail_image_url, email, gender, last_login_at from T_CM_USER
+    where email = #{email}
+  </select>
+  <select id="selectUserList">
+    select kakao_id, nickname, thumbnail_image_url, email, gender, last_login_at from T_CM_USER
+  </select>
+  <insert id="insertUser">
+    insert into T_CM_USER(
+	    kakao_id, nickname, thumbnail_image_url, email, gender, last_login_at
+    )values(
+        #{kakaoId}, #{nickname}, #{thumbnailImageUrl}, #{email}, #{gender}, now()
+    );
+  </insert>
+  <update id="updateUser">
+  update T_CM_USER set
+    last_login_at = now()
+  where kakao_id = #{kakaoId}
+  </update>
+</mapper>

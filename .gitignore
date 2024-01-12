@@ -1,0 +1,5 @@
+back/node_modules/*
+back/public/*
+back/undefined/*
+
+front/node_modules/*
