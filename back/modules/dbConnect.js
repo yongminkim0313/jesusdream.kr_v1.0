@@ -1,7 +1,5 @@
 const mariadb = require('mariadb');
 const mapper = require('./mapperConfig');
-const logger = require('./winstonConfig');
-
 
 const pool = mariadb.createPool({
     host: 'localhost',

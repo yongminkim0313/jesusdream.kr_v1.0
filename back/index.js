@@ -18,16 +18,16 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 var options = {
-    key: fs.readFileSync(path.join('../../SSL/www_jesusdream.kr.key')),
-    cert: fs.readFileSync(path.join('../../SSL/www_jesusdream.kr_cert.crt')),
+    key: fs.readFileSync(path.join(__dirname, '../../SSL/www_jesusdream.kr.key')),
+    cert: fs.readFileSync(path.join(__dirname, '../../SSL/www_jesusdream.kr_cert.crt')),
 };
 
-http.createServer(app).listen(8000, () =>{
+var httpServer = http.createServer(app).listen(8000, () =>{
     console.log(`server start! port:8000`)
 });
 var server = https.createServer(options, app)
         
-require('./modules/socketConfig')(server, app);
+require('./modules/socketConfig')(httpServer, app);
 
 server.listen(8443, ()=>{
     console.log(`server start! port:8443`)

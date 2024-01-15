@@ -6,6 +6,7 @@ export const socketStore = {
         socketData: [],
         socket: null,
         userInfo: {},
+        callback: null,
     }),
     mutations: {
         changeUserList(state, list) { state.userList = list },
@@ -17,6 +18,7 @@ export const socketStore = {
         changeUserInfo(state, info) { state.userInfo = info },
         addSocketData(state,socketData){state.socketData.push(socketData)},
         addFirstSocketData(state,socketData){state.socketData.unshift(socketData)},
+        setLocatFn(state,callback){state.callback = callback},
     },
     getters: {
         currentUserList(state) {
@@ -36,6 +38,9 @@ export const socketStore = {
         },
         currentSocketData(state, getters, rootState){
             return state.socketData;
+        },
+        currentLocations(state, getters, rootState){
+            return state.locations;
         }
     },
     actions: {
@@ -71,5 +76,14 @@ export const socketStore = {
         addFirstSocketData({state,commit, rootState}, socketData){
             commit("addFirstSocketData",socketData);
         },
+        setUserLocation({state,commit, rootState}, { latitude, longitude, timestamp, thumbnailImageUrl, callback}){
+            console.log('2.socketStore에서 받고 socket으로 locatiion 으로 전송 setUserLocation 콜백 등록 setLocatFn', { latitude, longitude, timestamp, thumbnailImageUrl, callback});
+            commit("setLocatFn", callback);
+            state.socket.emit('location', { latitude, longitude, timestamp, thumbnailImageUrl});
+        },
+        exeLocatFn({state,commit, rootState}, data){
+            console.log("5. 콜백 exeLocatFn 실행", state.callback, data)
+            if(typeof state.callback == "function" ) state.callback(data);
+        }
     }
 }

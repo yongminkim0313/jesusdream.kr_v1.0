@@ -65,6 +65,6 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../backVue3/public'
+    outDir: '../back/public'
   },
 })

@@ -1,53 +1,67 @@
 <template>
-  <div ref="dmap" style="width: 100%; height: 350px"></div>
-  <v-btn @click="setCenter()">지도 중심좌표 이동시키기</v-btn>
-  <v-btn @click="panTo()">지도 중심좌표 부드럽게 이동시키기</v-btn>
+  <v-row>
+    <div ref="dmap" style="width: 100%; height: 350px"></div>
+  </v-row>
+  <v-row>
+    <v-btn @click="setCenter()">지도 중심좌표 이동시키기</v-btn>
+    <v-btn @click="test()">test</v-btn>
+    <v-btn @click="displayMarker()">displayMarker</v-btn>
+    <v-btn @click="panTo()">지도 중심좌표 부드럽게 이동시키기</v-btn>
+  </v-row>
+  <v-row>
+    {{ locations }}
+  </v-row>
 </template>
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
 const dmap = ref(null);
-var latitude = null;
-var longitude = null;
+const locations = computed(() => store.getters.currentLocations);
+const userInfo = computed(() => store.getters.currentUserInfo);
+
 var map;
-console.log("start");
-function success({ coords, timestamp }) {
-  latitude = coords.latitude; // 위도
-  longitude = coords.longitude; // 경도
-  console.log(
-    `위도: ${latitude}, 경도: ${longitude}, 위치 반환 시간: ${timestamp}`
+function getPosition() {
+  return new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, reject)
   );
 }
-function getUserLocation() {
-  if (!navigator.geolocation) {
-    throw "위치 정보가 지원되지 않습니다.";
+var test = function () {
+  if (!userInfo.value.thumbnailImageUrl) return;
+  getPosition().then(({ coords: { latitude, longitude }, timestamp }) => {
+    console.log(latitude, longitude, timestamp);
+    var locPosition = new kakao.maps.LatLng(latitude, longitude); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+    var option = { center: locPosition, level: 9 };
+    if (!map) {
+      map = new kakao.maps.Map(dmap.value, option);
+    }
+    map.panTo(locPosition);
+    //1. 현재 위치 전송
+    console.log("1. 현재 위치 전송");
+    store.dispatch("setUserLocation", {
+      latitude,
+      longitude,
+      timestamp,
+      thumbnailImageUrl: userInfo.value.thumbnailImageUrl,
+      callback: function (data) {
+        console.log("9. 콜백 실행!! ", data);
+        var content = `<div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat"><div class="v-responsive v-img" aria-label=""><div class="v-responsive__sizer" style="padding-bottom: 100%;"></div><img class="v-img__img v-img__img--cover" src="${data.thumbnailImageUrl}" alt="" style=""><!----><!----><!----><!----><!----></div><!----><span class="v-avatar__underlay"></span></div>`;
+        var customOverlay = new kakao.maps.CustomOverlay({
+          position: locPosition,
+          content: content,
+          xAnchor: 0.3,
+          yAnchor: 0.91,
+        });
+        customOverlay.setMap(map); // 커스텀 오버레이를 지도에 표시합니다
+      },
+    });
+  });
+};
+
+onMounted(async () => {
+  let interval = null;
+  if (!interval) {
+    interval = setInterval(test, 5000);
   }
-  navigator.geolocation.getCurrentPosition(success);
-}
-getUserLocation();
-onMounted(() => {
-    var mapContainer = dmap.value, // 지도를 표시할 div 
-    mapOption = { 
-        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };
-
-    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 });
-
-function setCenter() {            
-    // 이동할 위도 경도 위치를 생성합니다 
-    var moveLatLon = new kakao.maps.LatLng(latitude, longitude);
-    
-    // 지도 중심을 이동 시킵니다
-    map.setCenter(moveLatLon);
-}
-
-function panTo() {
-    // 이동할 위도 경도 위치를 생성합니다 
-    var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
-    
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
-    map.panTo(moveLatLon);            
-}      
 </script>

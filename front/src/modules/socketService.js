@@ -35,6 +35,10 @@ export const Socket = function (store) {
         console.log('socketData', data);
         store.dispatch("addSocketData", data);
     })
+    this.socket.on('locations',(data)=>{
+        console.log("4. locations 로 받은후 socketStore의 콜백 실행");
+        store.dispatch("exeLocatFn", data);
+    })
 
     //socket 접속 2초후 접속
     var _this = this;

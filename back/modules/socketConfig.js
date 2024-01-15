@@ -103,6 +103,10 @@ module.exports = (server, app) => {
             console.log('유저가 나갔다. disconnecting');
             // socket.rooms.forEach(room => socket.to(room).emit("bye", countRoom(room) - 1));
         });
+        socket.on('location', (locations)=>{
+            console.log("3. 서버에서 location으로 받은후 전체에게 locations로 전송", locations);
+            app.io.emit('locations', locations);
+        })
     });
 
 }
