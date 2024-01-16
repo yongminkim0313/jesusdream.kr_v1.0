@@ -38,7 +38,7 @@ var test = function () {
       thumbnailImageUrl: userInfo.value.thumbnailImageUrl,
       callback: function (data) {
         // console.log("9. 콜백 실행!! ", data);
-        if(customOverlay) customOverlay.setMap(null);
+        //if(customOverlay) customOverlay.setMap(null);
         var content = `<div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat">`+
                         `<div class="v-responsive v-img" aria-label="">`+
                           `<div class="v-responsive__sizer" style="padding-bottom: 100%;"></div>`+
