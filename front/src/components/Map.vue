@@ -11,7 +11,7 @@ const dmap = ref(null);
 const locations = computed(() => store.getters.currentLocations);
 const userInfo = computed(() => store.getters.currentUserInfo);
 
-var customOverlay = null;
+
 
 var getPosition = () => {
   return new Promise((resolve, reject) =>
@@ -47,8 +47,8 @@ var test = function () {
                         `<span class="v-avatar__underlay"></span>`+
                       `</div>`+
                         `<div style="position: absolute; background-color: rgb(244,244,244);">${data.msg}</div>`
-
-        customOverlay = new kakao.maps.CustomOverlay({
+                         
+        var customOverlay = new kakao.maps.CustomOverlay({
           position: locPosition,
           content: content,
           xAnchor: 0.3,
