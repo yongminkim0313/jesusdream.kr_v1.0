@@ -3,10 +3,7 @@
     <div ref="dmap" style="width: 100%; height: 350px"></div>
   </v-row>
   <v-row>
-    <v-btn @click="setCenter()">지도 중심좌표 이동시키기</v-btn>
     <v-btn @click="test()">test</v-btn>
-    <v-btn @click="displayMarker()">displayMarker</v-btn>
-    <v-btn @click="panTo()">지도 중심좌표 부드럽게 이동시키기</v-btn>
   </v-row>
   <v-row>
     {{ locations }}
@@ -20,13 +17,13 @@ const dmap = ref(null);
 const locations = computed(() => store.getters.currentLocations);
 const userInfo = computed(() => store.getters.currentUserInfo);
 
-var map;
-function getPosition() {
+var getPosition = () => {
   return new Promise((resolve, reject) =>
-    navigator.geolocation.getCurrentPosition(resolve, reject)
+  navigator.geolocation.getCurrentPosition(resolve, reject)
   );
 }
 var test = function () {
+  var map;
   if (!userInfo.value.thumbnailImageUrl) return;
   getPosition().then(({ coords: { latitude, longitude }, timestamp }) => {
     console.log(latitude, longitude, timestamp);
@@ -37,7 +34,7 @@ var test = function () {
     }
     map.panTo(locPosition);
     //1. 현재 위치 전송
-    console.log("1. 현재 위치 전송");
+    // console.log("1. 현재 위치 전송");
     store.dispatch("setUserLocation", {
       latitude,
       longitude,
@@ -45,7 +42,15 @@ var test = function () {
       thumbnailImageUrl: userInfo.value.thumbnailImageUrl,
       callback: function (data) {
         console.log("9. 콜백 실행!! ", data);
-        var content = `<div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat"><div class="v-responsive v-img" aria-label=""><div class="v-responsive__sizer" style="padding-bottom: 100%;"></div><img class="v-img__img v-img__img--cover" src="${data.thumbnailImageUrl}" alt="" style=""><!----><!----><!----><!----><!----></div><!----><span class="v-avatar__underlay"></span></div>`;
+        var content = `<div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat">`+
+                        `<div class="v-responsive v-img" aria-label="">`+
+                          `<div class="v-responsive__sizer" style="padding-bottom: 100%;"></div>`+
+                          `<img class="v-img__img v-img__img--cover" src="${data.thumbnailImageUrl}" alt="" style="">`+
+                        `</div>`+
+                        `<span class="v-avatar__underlay"></span>`+
+                      `</div>`+
+                      `<div>${data.msg}</div>`
+                      ;
         var customOverlay = new kakao.maps.CustomOverlay({
           position: locPosition,
           content: content,
@@ -53,15 +58,19 @@ var test = function () {
           yAnchor: 0.91,
         });
         customOverlay.setMap(map); // 커스텀 오버레이를 지도에 표시합니다
+        setTimeout(()=>{
+          customOverlay.setMap(null); // 커스텀 오버레이를 지도에 표시합니다
+        }, 10000);
       },
     });
   });
 };
 
 onMounted(async () => {
-  let interval = null;
-  if (!interval) {
-    interval = setInterval(test, 5000);
-  }
+  store.dispatch("setAfterLoginFn",test);
+  // let interval = null;
+  // if (!interval) {
+  //   interval = setInterval(test, 10000);
+  // }
 });
 </script>

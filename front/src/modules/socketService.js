@@ -21,9 +21,6 @@ export const Socket = function (store) {
     this.socket.on('logout', (data) => {
         store.dispatch("setUserInfo", data);
     })
-    this.socket.on('logout', (data) => {
-        store.dispatch("setUserInfo", data);
-    })
     this.socket.on('recieve', (data) => {
         console.log("recieve", data);
         store.dispatch("setUserInfo", data);
@@ -36,8 +33,11 @@ export const Socket = function (store) {
         store.dispatch("addSocketData", data);
     })
     this.socket.on('locations',(data)=>{
-        console.log("4. locations 로 받은후 socketStore의 콜백 실행");
+        // console.log("4. locations 로 받은후 socketStore의 콜백 실행");
         store.dispatch("exeLocatFn", data);
+    })
+    this.socket.on('error', (data)=>{
+        console.error(data);
     })
 
     //socket 접속 2초후 접속

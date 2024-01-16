@@ -86,9 +86,13 @@ module.exports = (server, app) => {
             console.log('유저가 나갔다. logout');
         });
         socket.on('send', (sendData) => {
+            if(socket.handshake.session.userInfo){
             sendData["userInfo"] = socket.handshake.session.userInfo;
             app.io.emit('socketData', sendData);
             console.log('sendData', sendData);
+            }else{
+                socket.emit('error', {msg:"사용자 로그인이 필요합니다."});
+            }
         });
         socket.on('disconnect', () => {
             userList.delete(socket.id);
@@ -104,7 +108,7 @@ module.exports = (server, app) => {
             // socket.rooms.forEach(room => socket.to(room).emit("bye", countRoom(room) - 1));
         });
         socket.on('location', (locations)=>{
-            console.log("3. 서버에서 location으로 받은후 전체에게 locations로 전송", locations);
+            // console.log("3. 서버에서 location으로 받은후 전체에게 locations로 전송", locations);
             app.io.emit('locations', locations);
         })
     });

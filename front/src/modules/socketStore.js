@@ -6,7 +6,10 @@ export const socketStore = {
         socketData: [],
         socket: null,
         userInfo: {},
+        location: null,
         callback: null,
+        msg: "",
+        afterLoginFn: null,
     }),
     mutations: {
         changeUserList(state, list) { state.userList = list },
@@ -16,9 +19,11 @@ export const socketStore = {
         logout(state) { state.isLogin = false; },
         registSocket(state, socket) { state.socket = socket },
         changeUserInfo(state, info) { state.userInfo = info },
-        addSocketData(state,socketData){state.socketData.push(socketData)},
-        addFirstSocketData(state,socketData){state.socketData.unshift(socketData)},
-        setLocatFn(state,callback){state.callback = callback},
+        addSocketData(state, socketData) { state.socketData.push(socketData) },
+        addFirstSocketData(state, socketData) { state.socketData.unshift(socketData) },
+        setLocatFn(state, callback) { state.callback = callback },
+        setLocation(state, location) { state.location = location },
+        setAfterLoginFn(state, fn) { state.afterLoginFn = fn },
     },
     getters: {
         currentUserList(state) {
@@ -36,10 +41,10 @@ export const socketStore = {
         currentUserInfo(state, getters, rootState) {
             return state.userInfo;
         },
-        currentSocketData(state, getters, rootState){
+        currentSocketData(state, getters, rootState) {
             return state.socketData;
         },
-        currentLocations(state, getters, rootState){
+        currentLocations(state, getters, rootState) {
             return state.locations;
         }
     },
@@ -54,8 +59,8 @@ export const socketStore = {
             commit("changeUserInfo", {});
             commit("logout");
         },
-        doSend({ state, commit, rootState },sendData) {
-            console.log(sendData)
+        doSend({ state, commit, rootState }, sendData) {
+            sendData.location = state.location;
             state.socket.emit('send', sendData);
         },
         setUserList({ state, commit, rootState }, userList) {
@@ -69,21 +74,37 @@ export const socketStore = {
             console.log('setUserInfo!!!', info);
             commit("changeUserInfo", info);
             commit("login");
+            if (typeof state.afterLoginFn == "function") {
+                state.afterLoginFn();
+                console.log("test");
+            }
         },
-        addSocketData({state,commit, rootState}, socketData){
-            commit("addSocketData",socketData);
+        addSocketData({ state, commit, rootState }, socketData) {
+            if (socketData.location) {
+                console.log("위치정보 존재함.", socketData)
+                state.msg = socketData.msg;
+                socketData.location.msg = socketData.msg;
+                state.callback(socketData.location);
+            }
+            commit("addSocketData", socketData);
         },
-        addFirstSocketData({state,commit, rootState}, socketData){
-            commit("addFirstSocketData",socketData);
+        addFirstSocketData({ state, commit, rootState }, socketData) {
+            commit("addFirstSocketData", socketData);
         },
-        setUserLocation({state,commit, rootState}, { latitude, longitude, timestamp, thumbnailImageUrl, callback}){
-            console.log('2.socketStore에서 받고 socket으로 locatiion 으로 전송 setUserLocation 콜백 등록 setLocatFn', { latitude, longitude, timestamp, thumbnailImageUrl, callback});
+        setUserLocation({ state, commit, rootState }, { latitude, longitude, timestamp, thumbnailImageUrl, callback }) {
+            // console.log('2.socketStore에서 받고 socket으로 locatiion 으로 전송 setUserLocation 콜백 등록 setLocatFn', { latitude, longitude, timestamp, thumbnailImageUrl, callback});
             commit("setLocatFn", callback);
-            state.socket.emit('location', { latitude, longitude, timestamp, thumbnailImageUrl});
+            commit("setLocation", { latitude, longitude, timestamp });
+            state.socket.emit('location', { latitude, longitude, timestamp, thumbnailImageUrl });
         },
-        exeLocatFn({state,commit, rootState}, data){
+        exeLocatFn({ state, commit, rootState }, data) {
             console.log("5. 콜백 exeLocatFn 실행", state.callback, data)
-            if(typeof state.callback == "function" ) state.callback(data);
+            data.msg = state.msg;
+            if (typeof state.callback == "function") state.callback(data);
+        },
+        setAfterLoginFn({ state, commit, rootState }, fn){
+            console.log("setAfterLoginFn", fn)
+            commit("setAfterLoginFn", fn);
         }
     }
 }
