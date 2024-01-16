@@ -1,12 +1,6 @@
 <template>
   <v-row>
-    <div ref="dmap" style="width: 100%; height: 350px"></div>
-  </v-row>
-  <v-row>
-    <v-btn @click="test()">test</v-btn>
-  </v-row>
-  <v-row>
-    {{ locations }}
+    <div ref="dmap" style="width: 100%; height: 350px; background:rgb(233,233,233);"></div>
   </v-row>
 </template>
 <script setup>
@@ -16,6 +10,8 @@ const store = useStore();
 const dmap = ref(null);
 const locations = computed(() => store.getters.currentLocations);
 const userInfo = computed(() => store.getters.currentUserInfo);
+
+var customOverlay = null;
 
 var getPosition = () => {
   return new Promise((resolve, reject) =>
@@ -41,7 +37,8 @@ var test = function () {
       timestamp,
       thumbnailImageUrl: userInfo.value.thumbnailImageUrl,
       callback: function (data) {
-        console.log("9. 콜백 실행!! ", data);
+        // console.log("9. 콜백 실행!! ", data);
+        if(customOverlay) customOverlay.setMap(null);
         var content = `<div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat">`+
                         `<div class="v-responsive v-img" aria-label="">`+
                           `<div class="v-responsive__sizer" style="padding-bottom: 100%;"></div>`+
@@ -49,18 +46,15 @@ var test = function () {
                         `</div>`+
                         `<span class="v-avatar__underlay"></span>`+
                       `</div>`+
-                      `<div>${data.msg}</div>`
-                      ;
-        var customOverlay = new kakao.maps.CustomOverlay({
+                        `<div style="position: absolute; background-color: rgb(244,244,244);">${data.msg}</div>`
+
+        customOverlay = new kakao.maps.CustomOverlay({
           position: locPosition,
           content: content,
           xAnchor: 0.3,
           yAnchor: 0.91,
         });
         customOverlay.setMap(map); // 커스텀 오버레이를 지도에 표시합니다
-        setTimeout(()=>{
-          customOverlay.setMap(null); // 커스텀 오버레이를 지도에 표시합니다
-        }, 10000);
       },
     });
   });
@@ -74,3 +68,4 @@ onMounted(async () => {
   // }
 });
 </script>
+

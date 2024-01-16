@@ -89,7 +89,7 @@ module.exports = (server, app) => {
             if(socket.handshake.session.userInfo){
             sendData["userInfo"] = socket.handshake.session.userInfo;
             app.io.emit('socketData', sendData);
-            console.log('sendData', sendData);
+            console.log('socketData', sendData);
             }else{
                 socket.emit('error', {msg:"사용자 로그인이 필요합니다."});
             }
