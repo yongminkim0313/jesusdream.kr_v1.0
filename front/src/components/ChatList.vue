@@ -1,9 +1,9 @@
 <template>
   <v-switch
     v-model="chatBox"
-    label="red"
+    label="대화보기"
     color="red"
-    value="red"
+    value="true"
     hide-details
   ></v-switch>
   <v-infinite-scroll
@@ -20,7 +20,7 @@
       </div>
     </template>
     <template v-slot:empty>
-      <v-alert type="warning">대화가 시작되었습니다!</v-alert>
+      <v-alert type="success">대화가 시작되었습니다!</v-alert>
     </template>
   </v-infinite-scroll>
   <v-text-field

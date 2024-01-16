@@ -51,7 +51,7 @@
         >
       </v-btn>
       <v-btn @click="testLogin" block class="mt-2">
-        Test
+        선영테스트로그인
       </v-btn>
     </v-form>
     <v-list-item v-else :prepend-avatar="getters.currentUserInfo.thumbnailImageUrl" :title="getters.currentUserInfo.nickname">
@@ -87,6 +87,7 @@ const loginInfo = ref({ email: "kimyongmin1@kakao.com", pw: "password" });
 // const loginInfo = ref({ id: "lovely_s2_@nate.com", pw: "password" });
 const testLogin = ()=>{
   loginInfo.value = { email: "lovely_s2_@nate.com", pw: "password" }
+  store.dispatch("doLogin", loginInfo.value);
 }
 const show1 = ref(null);
 const rules = {
