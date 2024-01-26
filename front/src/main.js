@@ -37,12 +37,14 @@ app.config.globalProperties.$filters = {
 }
 
 import { socketStore } from '@/modules/socketStore';
+import { mapStore } from '@/modules/mapStore';
 
-const store = createStore({ modules: { socketStore} });
+const store = createStore({ modules: { socketStore, mapStore} });
 
 import { Socket } from '@/modules/socketService';
 const socket = new Socket(store);
-store.dispatch("registSocket", socket);
+store.dispatch("socketStore/registSocket", socket);
+store.dispatch("mapStore/registSocket", socket);
 
 registerPlugins(app)
 

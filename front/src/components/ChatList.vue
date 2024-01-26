@@ -35,16 +35,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-// const getters = computed(() => store.getters);
-const socketData = computed({
-  get() {
-    console.log("computed socketData")
-    return store.getters.currentSocketData;
-  },
-  set(newValue) {
-    console.log("newValue", newValue);
-  },
-});
+const socketData = computed(() => store.getters["socketStore/currentSocketData"]);
 const items = ref([]);
 const enterText = ref(null);
 const chatBox = ref(false);
@@ -54,7 +45,7 @@ const load = async ({ done }) => {
 };
 
 const doSend = () => {
-  store.dispatch("doSend", { msg: enterText.value });
+  store.dispatch("socketStore/doSend", { msg: enterText.value });
   enterText.value = "";
 };
 </script>

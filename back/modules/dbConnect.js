@@ -10,7 +10,7 @@ const pool = mariadb.createPool({
     logger: {
         // network: (msg) => logger.silly(msg),
         // query: (msg) => logger.info(msg),
-        error: (err) => logger.error(err),
+        error: (err) => console.error(err),
       },
       bigIntAsNumber:true,
 });
@@ -18,11 +18,11 @@ const pool = mariadb.createPool({
 async function test() {
     pool.getConnection()
     .then(conn=>{
-        logger.info(`success mariaDB connected ${process.env.HOST} ${process.env.PORT}`)
+        console.info(`success mariaDB connected ${process.env.HOST} ${process.env.PORT}`)
         conn.end();
     })
     .catch(err=>{
-        logger.error(err)
+        console.error(err)
     })
 }
 

@@ -7,34 +7,28 @@ export const Socket = function (store) {
         path: "/my-ws",
     }),
         this.socket.on("connect", () => {
-            store.dispatch("onConnect");
+            store.dispatch("socketStore/onConnect");
         })
     this.socket.on('disconnect', () => {
-        store.dispatch("onDisconnect");
+        store.dispatch("socketStore/onDisconnect");
     });
     this.socket.on('userList', (data) => {
-        store.dispatch("setUserList", data);
+        // console.log("socket.on userList", data);
+        store.dispatch("socketStore/setUserList", data);
+        store.dispatch("mapStore/setUserList", data);
     })
     this.socket.on('login', (data) => {
-        store.dispatch("setUserInfo", data);
+        store.dispatch("socketStore/setUserInfo", data);
     })
     this.socket.on('logout', (data) => {
-        store.dispatch("setUserInfo", data);
-    })
-    this.socket.on('recieve', (data) => {
-        console.log("recieve", data);
-        store.dispatch("setUserInfo", data);
+        store.dispatch("socketStore/setUserInfo", data);
     })
     this.socket.on('roomChange', (data) => {
-        console.log("roomChange", data);
+        console.log("socketStore/roomChange", data);
     })
     this.socket.on('socketData',(data)=>{
         console.log('socketData', data);
-        store.dispatch("addSocketData", data);
-    })
-    this.socket.on('locations',(data)=>{
-        // console.log("4. locations 로 받은후 socketStore의 콜백 실행");
-        store.dispatch("exeLocatFn", data);
+        store.dispatch("socketStore/addSocketData", data);
     })
     this.socket.on('error', (data)=>{
         console.error(data);

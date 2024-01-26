@@ -1,7 +1,7 @@
 <template>
   <v-slide-group show-arrows>
     <v-slide-group-item
-      v-for="n in getters.currentUserList"
+      v-for="n in currentUserList"
       :key="n.kakaoId"
       v-slot="{ isSelected, toggle }"
     >
@@ -22,6 +22,6 @@
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-const getters = computed(() => store.getters);
+const currentUserList = computed(() => store.getters["socketStore/currentUserList"]);
 </script>
   

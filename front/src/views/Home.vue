@@ -2,7 +2,7 @@
   
   <v-menu open-on-hover>
     <template v-slot:activator="{ props }">
-      <v-btn color="primary" v-bind="props"> 접속자 {{ getters.currentUserList.length }}</v-btn>
+      <v-btn color="primary" v-bind="props"> 접속자 {{ currentUserList.length }}</v-btn>
     </template>
     
     <UserList></UserList>
@@ -37,7 +37,7 @@ import { useStore } from "vuex";
 
 const testText = ref("testText");
 const store = useStore();
-const getters = computed(() => store.getters);
+const currentUserList = computed(() => store.getters["socketStore/currentUserList"]);
 
 const boardlist = ref(null);
 onMounted(() => {

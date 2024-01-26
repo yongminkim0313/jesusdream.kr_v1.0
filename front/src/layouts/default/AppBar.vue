@@ -10,7 +10,7 @@
     <v-badge
       floating
       dot
-      :color="getters.currentConnection == 'connected' ? 'green' : 'red'"
+      :color="currentConnection == 'connected' ? 'green' : 'red'"
       class="text-red-lighten-2"
     >
       <v-app-bar-title> YOUTHVISION </v-app-bar-title>
@@ -22,7 +22,7 @@
   </v-app-bar>
   <v-navigation-drawer v-model="drawer" temporary>
     <v-form
-      v-if="getters.currentLogin == 'logout'"
+      v-if="currentLogin == 'logout'"
       validate-on="submit lazy"
       @submit.prevent="submit"
       class="ma-2"
@@ -46,7 +46,7 @@
       <v-btn type="submit" block class="mt-2">
         login
         <v-icon
-          :color="getters.currentConnection == 'connected' ? 'green' : 'red'"
+          :color="currentConnection == 'connected' ? 'green' : 'red'"
           >mdi-circle</v-icon
         >
       </v-btn>
@@ -54,7 +54,7 @@
         선영테스트로그인
       </v-btn>
     </v-form>
-    <v-list-item v-else :prepend-avatar="getters.currentUserInfo.thumbnailImageUrl" :title="getters.currentUserInfo.nickname">
+    <v-list-item v-else :prepend-avatar="currentUserInfo.thumbnailImageUrl" :title="currentUserInfo.nickname">
       <template v-slot:append>
         <v-btn icon="mdi-logout" variant="text" @click="logout"></v-btn>
       </template>
@@ -82,12 +82,14 @@
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-const getters = computed(() => store.getters);
+const currentConnection = computed(() => store.getters['socketStore/currentConnection']);
+const currentLogin = computed(() => store.getters['socketStore/currentLogin']);
+const currentUserInfo = computed(() => store.getters['socketStore/currentUserInfo']);
 const loginInfo = ref({ email: "kimyongmin1@kakao.com", pw: "password" });
 // const loginInfo = ref({ id: "lovely_s2_@nate.com", pw: "password" });
 const testLogin = ()=>{
   loginInfo.value = { email: "lovely_s2_@nate.com", pw: "password" }
-  store.dispatch("doLogin", loginInfo.value);
+  store.dispatch("socketStore/doLogin", loginInfo.value);
 }
 const show1 = ref(null);
 const rules = {
@@ -99,11 +101,11 @@ const rules = {
 const submit = async function (event) {
   const results = await event;
   if (results.valid) {
-    store.dispatch("doLogin", loginInfo.value);
+    store.dispatch("socketStore/doLogin", loginInfo.value);
   }
 };
 const logout = () => {
-  store.dispatch("doLogout");
+  store.dispatch("socketStore/doLogout");
 };
 </script>
 
