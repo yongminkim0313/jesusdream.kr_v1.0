@@ -13,6 +13,8 @@ app.get('/api/public/testText', (req, res) => {
     res.status(200).json({ msg: '이것은 테스트입니다.' })
 })
 
+require('./services/publicService')(app);
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '50mb' }));

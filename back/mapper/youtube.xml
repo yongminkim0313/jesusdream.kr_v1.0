@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="youtube">  
+    <select id="selectYoutube">
+        select * from T_CM_YOUTUBE where type = #{type} order by seq
+    </select>
+</mapper>
