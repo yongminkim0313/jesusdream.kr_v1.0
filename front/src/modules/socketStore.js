@@ -9,19 +9,16 @@ export const socketStore = {
         userInfo: {},
         callback: null,
         msg: "",
-        afterLoginFn: null,
     }),
     mutations: {
         changeUserList(state, list) { state.userList = list },
         connected(state) { state.isConnected = true; },
         disconnected(state) { state.isConnected = false; },
-        login(state) { state.isLogin = true; },
-        logout(state) { state.isLogin = false; },
+        login(state, info) { state.isLogin = true; state.userInfo = info; },
+        logout(state) { state.isLogin = false; state.userInfo = {}; },
         registSocket(state, socket) { state.socket = socket },
-        changeUserInfo(state, info) { state.userInfo = info },
         addSocketData(state, socketData) { state.socketData.push(socketData) },
         addFirstSocketData(state, socketData) { state.socketData.unshift(socketData) },
-        setAfterLoginFn(state, fn) { state.afterLoginFn = fn },
     },
     getters: {
         currentUserList(state) {
@@ -39,20 +36,19 @@ export const socketStore = {
         currentUserInfo(state, getters, rootState) {
             return state.userInfo;
         },
-        currentSocketData(state, getters, rootState) {
-            return state.socketData;
-        },
     },
     actions: {
         onConnect({ state, commit, rootState }) { commit("connected"); },
         onDisconnect({ state, commit, rootState }) { commit("disconnected"); commit("logout"); },
         doLogin({ state, commit, rootState }, info) {
-            state.socket.emit('login', info);
+            state.socket.emit('login', info, function (data) {
+                commit("login", data);
+            });
         },
         doLogout({ state, commit, rootState }) {
-            state.socket.emit('logout');
-            commit("changeUserInfo", {});
-            commit("logout");
+            state.socket.emit('logout', {}, () => {
+                commit("logout");
+            });
         },
         doSend({ state, commit, rootState }, sendData) {
             state.socket.emit('send', sendData);
@@ -63,22 +59,12 @@ export const socketStore = {
         registSocket({ state, commit, rootState }, socket) {
             commit("registSocket", socket);
         },
-        setUserInfo({ state, commit, rootState }, info) {
-            // console.log('setUserInfo!!!', info);
-            commit("changeUserInfo", info);
-            commit("login");
-            if (typeof state.afterLoginFn == "function") {
-                state.afterLoginFn();
-            }
-        },
         addSocketData({ state, commit, rootState }, socketData) {
-            commit("addSocketData", socketData);
+            console.log("addSocketData userInfo",state.userInfo);
+            commit("addSocketData", Object.assign(socketData, state.userInfo));
         },
         addFirstSocketData({ state, commit, rootState }, socketData) {
             commit("addFirstSocketData", socketData);
         },
-        setAfterLoginFn({ state, commit, rootState }, fn) {
-            commit("setAfterLoginFn", fn);
-        }
     }
 }

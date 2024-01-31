@@ -13,31 +13,22 @@ export const Socket = function (store) {
         store.dispatch("socketStore/onDisconnect");
     });
     this.socket.on('userList', (data) => {
-        // console.log("socket.on userList", data);
         store.dispatch("socketStore/setUserList", data);
         store.dispatch("mapStore/setUserList", data);
     })
-    this.socket.on('login', (data) => {
-        store.dispatch("socketStore/setUserInfo", data);
-    })
-    this.socket.on('logout', (data) => {
-        store.dispatch("socketStore/setUserInfo", data);
-    })
-    this.socket.on('roomChange', (data) => {
-        console.log("socketStore/roomChange", data);
-    })
-    this.socket.on('socketData',(data)=>{
+    this.socket.on('socketData', (data) => {
         console.log('socketData', data);
         store.dispatch("socketStore/addSocketData", data);
     })
-    this.socket.on('error', (data)=>{
+    this.socket.on('from server drawMsg', (data) => {
+        store.dispatch("mapStore/drawMsg", data);
+        store.dispatch("socketStore/addSocketData", data);
+    })
+    
+    this.socket.on('error', (data) => {
         console.error(data);
     })
 
-    //socket 접속 2초후 접속
-    var _this = this;
-    setTimeout(function () {
-        _this.socket.connect();
-    }, 2000);
+    this.socket.connect()
     return this.socket;
 }

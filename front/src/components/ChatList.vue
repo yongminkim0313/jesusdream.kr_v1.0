@@ -15,7 +15,7 @@
   >
     <template v-for="(item, index) in socketData" :key="item">
       <div :class="['pa-2', index % 2 === 0 ? 'bg-grey-lighten-2' : '']">
-        <v-avatar :image="item.userInfo.thumbnailImageUrl"> </v-avatar>
+        <v-avatar :image="item.thumbnailImageUrl"> </v-avatar>
         {{ item.msg }}
       </div>
     </template>

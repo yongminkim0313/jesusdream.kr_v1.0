@@ -26,10 +26,11 @@
       <v-menu open-on-hover>
         <template v-slot:activator="{ props }">
           <v-btn color="primary" v-bind="props">
-            접속자 {{ currentUserList.length }}</v-btn>
-          </template>
-          <UserList></UserList>
-        </v-menu>
+            접속자 {{ currentUserList.length }}</v-btn
+          >
+        </template>
+        <UserList></UserList>
+      </v-menu>
     </template>
   </v-app-bar>
   <v-navigation-drawer v-model="drawer" temporary>
@@ -40,19 +41,19 @@
       class="ma-2"
     >
       <v-text-field
-        v-model="loginInfo.email"
+        v-model="loginInfo.church"
+        prepend-icon="mdi-church"
         :rules="[rules.required]"
-        label="ID"
+        label="교회명"
+        hint="교회명을 입력해주세요"
       ></v-text-field>
       <v-text-field
-        v-model="loginInfo.pw"
-        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-        :rules="[rules.required, rules.min]"
-        :type="show1 ? 'text' : 'password'"
-        name="input-10-1"
-        label="8자이상"
-        hint="최소 8자 이상"
-        counter
+        v-model="loginInfo.nickname"
+        prepend-icon="mdi-account"
+        :rules="[rules.required]"
+        name="nickname"
+        label="이름"
+        hint="이름을 입력해주세요"
         @click:append="show1 = !show1"
       ></v-text-field>
       <v-btn type="submit" block class="mt-2">
@@ -112,10 +113,10 @@ const currentLogin = computed(() => store.getters["socketStore/currentLogin"]);
 const currentUserInfo = computed(
   () => store.getters["socketStore/currentUserInfo"]
 );
-const loginInfo = ref({ email: "kimyongmin1@kakao.com", pw: "password" });
+const loginInfo = ref({ church: "주님이꿈꾸신교회", nickname: "김용민" });
 // const loginInfo = ref({ id: "lovely_s2_@nate.com", pw: "password" });
 const testLogin = () => {
-  loginInfo.value = { email: "lovely_s2_@nate.com", pw: "password" };
+  loginInfo.value = { church: "주님이꿈꾸신교회", nickname: "윤선영" };
   store.dispatch("socketStore/doLogin", loginInfo.value);
 };
 const show1 = ref(null);
