@@ -69,9 +69,9 @@ module.exports = (server, app) => {
             socket.handshake.session.location = location;
             socket.handshake.session.save();
             console.log(socket.handshake.session);
-            var { location: { latitude, longitude }, userInfo: { thumbnailImageUrl, nickname } } = socket.handshake.session;
-            socket.broadcast.emit('from server drawLocation', { latitude, longitude, thumbnailImageUrl, nickname})
-            socket.emit('from server drawLocation', { latitude, longitude, thumbnailImageUrl, nickname })
+            var { location, userInfo} = socket.handshake.session;
+            socket.broadcast.emit('from server drawLocation', Object.assign(location, userInfo))
+            socket.emit('from server drawLocation', Object.assign(location, userInfo))
         });
     }
 
