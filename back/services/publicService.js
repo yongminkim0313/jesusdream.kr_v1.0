@@ -25,4 +25,9 @@ module.exports = (app) => {
             res.status(200).json(row);
         })
     })
+
+    app.put('/api/public/bbs/cnt',(req,res)=>{
+        db.setData('bbs','updateBbsClickCnt',req.body);
+        res.status(200).send('cnt +1');
+    })
 }

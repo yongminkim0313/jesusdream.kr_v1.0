@@ -8,7 +8,7 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'Home',
+        name: 'home',
         component: () => import('@/views/Home.vue'),
       },
       {
@@ -25,6 +25,16 @@ const routes = [
         path: 'admin',
         name: 'admin',
         component: () => import('@/views/Admin.vue'),
+      },
+      {
+        path: 'boarddetail',
+        name: 'boarddetail',
+        component: () => import('@/views/BoardDetail.vue'),
+      },
+      {
+        path: 'boardlist',
+        name: 'boardlist',
+        component: () => import('@/views/BoardList.vue'),
       },
     ],
   },

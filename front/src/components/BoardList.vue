@@ -43,9 +43,8 @@ export default {
   },
   methods: {
     goBbs: function (item) {
-      this.$axios.put("/api/public/bbs/cnt", item);
       this.$router.push({
-        name: "게시판상세",
+        name: "boarddetail",
         query: { idx: item.idx },
       });
     },

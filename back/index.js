@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
@@ -11,14 +12,14 @@ app.get('/api/public/testText', (req, res) => {
     res.status(200).json({ msg: '이것은 테스트입니다.' })
 })
 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: '*' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 require('./services/publicService')(app);
 require('./services/userService.js')(app);
 require('./services/adminService.js')(app);
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true }));
 
 var options = {
     key: fs.readFileSync(path.join(__dirname, '../../SSL/www_jesusdream.kr.key')),
