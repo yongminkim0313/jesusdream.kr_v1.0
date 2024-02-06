@@ -6,14 +6,14 @@ const https = require('https');
 const fs = require('fs');
 
 const app = express();
-app.get('/api/public/board', (req, res) => {
-    res.status(200).end();
-})
+
 app.get('/api/public/testText', (req, res) => {
     res.status(200).json({ msg: '이것은 테스트입니다.' })
 })
 
 require('./services/publicService')(app);
+require('./services/userService.js')(app);
+require('./services/adminService.js')(app);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));

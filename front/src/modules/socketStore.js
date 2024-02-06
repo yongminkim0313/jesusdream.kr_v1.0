@@ -1,3 +1,4 @@
+
 export const socketStore = {
     namespaced: true,
     state: () => ({
@@ -9,6 +10,7 @@ export const socketStore = {
         userInfo: {},
         callback: null,
         msg: "",
+        hint: "",
     }),
     mutations: {
         changeUserList(state, list) { state.userList = list },
@@ -19,6 +21,7 @@ export const socketStore = {
         registSocket(state, socket) { state.socket = socket },
         addSocketData(state, socketData) { state.socketData.push(socketData) },
         addFirstSocketData(state, socketData) { state.socketData.unshift(socketData) },
+        setLoginAdminHint(state, hint) { state.hint = hint;},
     },
     getters: {
         currentUserList(state) {
@@ -36,22 +39,20 @@ export const socketStore = {
         currentUserInfo(state, getters, rootState) {
             return state.userInfo;
         },
+        loginAdminHint(state, getters, rootState) {
+            return state.hint;
+        },
     },
     actions: {
         onConnect({ state, commit, rootState }) { commit("connected"); },
         onDisconnect({ state, commit, rootState }) { commit("disconnected"); commit("logout"); },
         doLogin({ state, commit, rootState }, info) {
-            state.socket.emit('login', info, function (data) {
-                commit("login", data);
-            });
+            commit("login", info);
         },
         doLogout({ state, commit, rootState }) {
-            state.socket.emit('logout', {}, () => {
-                commit("logout");
-            });
+            commit("logout");
         },
         doSend({ state, commit, rootState }, sendData) {
-            state.socket.emit('send', sendData);
         },
         setUserList({ state, commit, rootState }, userList) {
             commit("changeUserList", userList);
@@ -60,11 +61,12 @@ export const socketStore = {
             commit("registSocket", socket);
         },
         addSocketData({ state, commit, rootState }, socketData) {
-            console.log("addSocketData userInfo",state.userInfo);
+            console.log("addSocketData userInfo", state.userInfo);
             commit("addSocketData", Object.assign(socketData, state.userInfo));
         },
         addFirstSocketData({ state, commit, rootState }, socketData) {
             commit("addFirstSocketData", socketData);
         },
-    }
+        adminPage({ state, commit, rootState }, answer){ }
+    },
 }

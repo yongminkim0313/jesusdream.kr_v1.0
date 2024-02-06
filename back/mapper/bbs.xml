@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="bbs">  
+  <select id="selectBbs">
+    select 
+        a.idx, a.upp_idx, a.title, a.contents, a.click_cnt, a.delyn, a.rgst_dt, a.rgst_id,
+        b.atchmnfl_nm, b.atchmnfl_size, b.atchmnfl_id, c.thumbnail_image_url
+    from T_CM_BBS a
+    left outer join T_CM_ATCHMNFL b on a.atchmnfl_id = b.atchmnfl_id
+    left outer join T_CM_USER c on a.rgst_id = c.kakao_id
+    where a.delyn = 'N'
+    and a.upp_idx = 0
+    order by a.idx desc
+  </select>
+
+  <select id="selectBoardList">
+    select * 
+    from (
+      select row_number() over(order by a.idx desc) as rownum,
+          convert(a.idx, CHAR(5)) as idx,
+          a.upp_idx, a.title, a.contents, a.click_cnt, a.delyn, a.rgst_dt, a.rgst_id,
+          b.atchmnfl_nm, b.atchmnfl_size, b.atchmnfl_id, c.thumbnail_image_url
+      from T_CM_BBS a
+      left outer join T_CM_ATCHMNFL b on a.atchmnfl_id = b.atchmnfl_id
+      left outer join T_CM_USER c on a.rgst_id = c.kakao_id
+      where a.delyn = 'N'
+      and a.upp_idx = 0
+    ) as v
+    where rownum <![CDATA[ < 5 ]]>
+
+  </select>
+
+  <select id="selectBbsCnt">
+    select count(1) as cnt from T_CM_BBS a where a.idx = #{idx}
+  </select>
+
+  <insert id="insertBbs">
+  insert into T_CM_BBS(
+    upp_idx, title, contents, click_cnt, atchmnfl_id, rgst_dt, rgst_id 
+  ) values (
+    0, #{title}, #{contents}, 0, #{atchmnflId}, now(), #{kakaoId}
+  )
+  </insert>
+  <update id="updateBbs">
+  update T_CM_BBS set
+    title = #{title},
+    contents = #{contents},
+    atchmnfl_id = #{atchmnflId}
+  where idx = #{idx}
+  </update>
+  <update id="updateBbsClickCnt">
+  update T_CM_BBS set
+    click_cnt = click_cnt+1
+  where idx = #{idx}
+  </update>
+  <update id="deleteBbs">
+  update T_CM_BBS set
+    delyn = 'Y'
+  where idx = #{idx}
+  </update>
+  <select id="selectAtchmnfl">
+  select 
+    atchmnfl_id, atchmnfl_sn, atchmnfl_nm, atchmnfl_size, atchmnfl_path, rgst_dt,rgst_id 
+  from T_CM_ATCHMNFL
+  where atchmnfl_id = #{atchmnflId}
+  and atchmnfl_sn = #{atchmnflSn}
+  </select>
+  <insert id="insertAtchmnfl">
+  insert into T_CM_ATCHMNFL (
+    atchmnfl_id, atchmnfl_sn, atchmnfl_nm, atchmnfl_size, atchmnfl_path, rgst_dt, rgst_id 
+  ) values (
+    #{atchmnflId}, #{atchmnflSn}, #{atchmnflNm}, #{atchmnflSize}, #{atchmnflPath}, now(), #{kakaoId} 
+  )
+  </insert>
+  <select id="selectNextAtchmnflSeq">
+    select nextval(T_CM_ATCHMNFL_SEQ) as seq
+  </select>
+  <insert id="insertBbsReply">
+  insert into T_CM_BBS(
+    upp_idx, title, contents, click_cnt, atchmnfl_id, rgst_dt, rgst_id 
+  ) values (
+    #{uppIdx},#{title}, #{contents}, 0, #{atchmnflId}, now(), #{kakaoId}
+  )
+  </insert>
+  <select id="selectBbsReply">
+  select 
+        a.idx, a.upp_idx, a.title, a.contents, a.click_cnt, a.delyn, a.rgst_dt, a.rgst_id,
+        b.atchmnfl_nm, b.atchmnfl_size, b.atchmnfl_id, c.thumbnail_image_url
+    from T_CM_BBS a
+    left outer join T_CM_ATCHMNFL b on a.atchmnfl_id = b.atchmnfl_id
+    left outer join T_CM_USER c on a.rgst_id = c.kakao_id
+    where a.delyn = 'N'
+    and a.upp_idx = #{idx}
+  </select>
+  <select id="selectBbsDetail">
+  select 
+        a.idx, a.upp_idx, a.title, a.contents, a.click_cnt, a.delyn, a.rgst_dt, a.rgst_id,
+        b.atchmnfl_nm, b.atchmnfl_size, b.atchmnfl_id, c.thumbnail_image_url, c.nickname
+    from T_CM_BBS a
+    left outer join T_CM_ATCHMNFL b on a.atchmnfl_id = b.atchmnfl_id
+    left outer join T_CM_USER c on a.rgst_id = c.kakao_id
+    where a.delyn = 'N'
+    and a.upp_idx = 0
+    and a.idx = #{idx}
+  </select>
+</mapper>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="campAply">  
+  <select id="selectMaxSeq">
+    select max(seq) as seq from T_CM_APLY_CAMP
+  </select>
+
+  <select id="selectCampAply">
+    select 
+      seq, aply_tot_amt, aply_prgrs, aply_dt, aply_name, jikbun_se, church_adtr, church_addr,church,church_se,
+      church_dtl_addr, schdl_se, phone, email, checkbox, full_address, detail_address, join_his_se,
+      rgtr_nm, rgtr_dt, updt_nm, updt_dt, kakao_email, pyr_nm, checkbox_use_room, bank_nm, kakao_id, memo,
+      nvl((select sum(brochure_cnt) from T_CM_APLY_POSTER where email = T_CM_APLY_CAMP.email),0) as brochure_cnt,
+      nvl((select sum(poster_cnt) from T_CM_APLY_POSTER where email = T_CM_APLY_CAMP.email),0) as poster_cnt
+    from T_CM_APLY_CAMP
+    where delyn='N'
+  </select>
+
+  <select id="selectCampAplyToPoster">
+    select 
+      seq, aply_tot_amt, aply_prgrs, aply_dt, aply_name, jikbun_se, church_adtr, church_addr,church,church_se,
+      church_dtl_addr, schdl_se, phone, email, checkbox, full_address, detail_address, join_his_se,
+      rgtr_nm, rgtr_dt, updt_nm, updt_dt, kakao_email, pyr_nm, checkbox_use_room, bank_nm, kakao_id, memo
+    from T_CM_APLY_CAMP
+    where kakao_id = #{kakaoId}
+  </select>
+  
+  <select id='selectCampCntAll'>
+    select seq, chodeung, cheongsonyeon, cheongnyeon, jangnyeon, sayeogja from T_CM_CAMP_CNT
+  </select>
+
+  <select id='selectCampCnt'>
+    select A.seq, A.chodeung, A.cheongsonyeon, A.cheongnyeon, A.jangnyeon, A.sayeogja 
+    from T_CM_CAMP_CNT A
+      inner join T_CM_APLY_CAMP B on A.seq = B.seq
+    where B.kakao_id = #{kakaoId}
+  </select>
+
+  <select id='selectPathSeAll'>
+    select seq, path from T_CM_JOIN_PATH_SE
+  </select>
+
+  <select id="selectCampAplyOne">
+    select 
+      seq, aply_tot_amt, aply_prgrs, aply_dt, aply_name, jikbun_se, church_adtr, church_addr,church,church_se,
+      church_dtl_addr, schdl_se, phone, email, checkbox, full_address, detail_address, join_his_se,
+      rgtr_nm, rgtr_dt, updt_nm, updt_dt, kakao_email, pyr_nm, checkbox_use_room, bank_nm, kakao_id, memo,
+      ( select concat('초등:',chodeung,'명 ',
+              '청소년:',cheongsonyeon,'명 ',
+              '청년:',cheongnyeon,'명 ',
+              '장년:',jangnyeon,'명 ',
+              '사역자:',sayeogja,'명') 
+        from T_CM_CAMP_CNT 
+        where seq = T_CM_APLY_CAMP.seq) as "campCnt"
+    from T_CM_APLY_CAMP
+    where kakao_id = #{kakaoId}
+  </select>
+  
+  <select id="selectCampAplyCntSeq">
+    select count(*) as cnt from T_CM_APLY_CAMP where seq = #{seq}
+  </select>
+
+  <select id="selectCampAplyCnt">
+    select count(*) as acnt from T_CM_APLY_CAMP where kakao_id = #{kakaoId} and delyn='N'
+  </select>
+  <select id="selectPosterAplyCnt">
+    select count(*) as pcnt from T_CM_APLY_POSTER where kakao_id = #{kakaoId} 
+  </select>
+
+  <select id="selectJoinPathSe">
+    select A.seq, A.path 
+    from T_CM_JOIN_PATH_SE A
+      inner join T_CM_APLY_CAMP B on A.seq = B.seq
+    where B.kakao_id = #{kakaoId}
+  </select>
+
+  <insert id="insertJoinPathSe">
+    insert into T_CM_JOIN_PATH_SE ( seq, path )
+    values (#{seq}, #{path})
+  </insert>
+
+  <delete id="deleteJoinPathSe">
+    delete from T_CM_JOIN_PATH_SE where seq = #{seq}
+  </delete>
+
+  <insert id="insertCampCnt">
+    insert into T_CM_CAMP_CNT (seq, chodeung, cheongsonyeon, cheongnyeon, jangnyeon, sayeogja)
+    values(#{seq}, #{chodeung}, #{cheongsonyeon}, #{cheongnyeon}, #{jangnyeon}, #{sayeogja})
+  </insert>
+
+  <insert id="insertCampAply">
+  INSERT INTO T_CM_APLY_CAMP (
+    seq, aply_tot_amt, aply_prgrs, aply_dt, aply_name, jikbun_se, church_adtr, church_addr,church,church_se,
+      church_dtl_addr, schdl_se, phone, email, checkbox, full_address, detail_address, join_his_se,
+      rgtr_nm, rgtr_dt, updt_nm, updt_dt, pyr_nm, checkbox_use_room, bank_nm, kakao_id, memo
+  ) VALUES (
+    #{seq}, #{aplyTotAmt}, #{aplyPrgrs}, #{aplyDt}, #{aplyName}, #{jikbunSe}, #{churchAdtr}, #{churchAddr},#{church},#{churchSe},
+    #{churchDtlAddr}, #{schdlSe}, #{phone}, #{email}, #{checkbox}, #{fullAddress}, #{detailAddress}, #{joinHisSe},
+    #{rgtrNm}, #{rgtrDt}, #{updtNm}, #{updtDt}, #{pyrNm}, #{checkboxUseRoom}, #{bankNm}, #{kakaoId}, #{memo}
+  )
+  </insert>
+
+  <select id="selectAplyPosterList">
+    select * from T_CM_APLY_POSTER
+  </select>
+
+  <insert id="insertAplyPoster">
+  insert into T_CM_APLY_POSTER(
+    aply_name, email, brochure_cnt, poster_cnt, church, addr, dtl_addr, phone, kakao_id) 
+    values(
+    #{aplyName},
+    #{email},
+    #{brochureCnt},
+    #{posterCnt},
+    #{church},
+    #{addr},
+    #{dtlAddr},
+    #{phone},
+    #{kakaoId}
+    )
+  </insert>
+  <update id="updateAplyCampPrgrs">
+  update T_CM_APLY_CAMP set
+    aply_prgrs = #{aplyPrgrs}
+  where seq = #{seq}
+  </update>
+   <update id="updateCampAply">
+  update T_CM_APLY_CAMP set
+    aply_name = #{aplyName}, 
+    aply_dt = #{aplyDt},
+    aply_prgrs = #{aplyPrgrs},
+    jikbun_se = #{jikbunSe}, 
+    church_adtr = #{churchAdtr}, 
+    church_addr = #{churchAddr},
+    church = #{church},
+    church_se = #{churchSe},
+    church_dtl_addr = #{churchDtlAddr}, 
+    schdl_se = #{schdlSe}, 
+    phone = #{phone}, 
+    email = #{email}, 
+    full_address = #{fullAddress}, 
+    detail_address = #{detailAddress},
+    pyr_nm = #{pyrNm}, 
+    bank_nm = #{bankNm},  
+    memo = #{memo},
+    updt_nm = #{updtNm}, 
+    updt_dt = #{updtDt}
+  where seq = #{seq}
+  </update>
+
+   <update id="updateCampCnt">
+    update T_CM_CAMP_CNT set 
+      chodeung = #{chodeung}, 
+      cheongsonyeon = #{cheongsonyeon}, 
+      cheongnyeon = #{cheongnyeon}, 
+      jangnyeon = #{jangnyeon}, 
+      sayeogja = #{sayeogja}
+    where seq = #{seq}
+  </update>
+
+  <delete id="deleteAplyCamp">
+    update T_CM_APLY_CAMP set delyn = 'Y' where seq = #{seq}
+  </delete>
+  <insert id="insertCampConnectUuid">
+    insert into T_CM_CAMP_CONNECT_UUID values(#{uuid}, #{seq});
+  </insert>
+  <select id="selectCampAplyOneForUuid">
+    select 
+      seq, aply_tot_amt, aply_prgrs, aply_dt, aply_name, jikbun_se, church_adtr, church_addr,church,church_se,
+      church_dtl_addr, schdl_se, phone, email, checkbox, full_address, detail_address, join_his_se,
+      rgtr_nm, rgtr_dt, updt_nm, updt_dt, kakao_email, pyr_nm, checkbox_use_room, bank_nm, kakao_id, memo,
+      ( select concat('초등:',chodeung,'명 ',
+              '청소년:',cheongsonyeon,'명 ',
+              '청년:',cheongnyeon,'명 ',
+              '장년:',jangnyeon,'명 ',
+              '사역자:',sayeogja,'명') 
+        from T_CM_CAMP_CNT 
+        where seq = T_CM_APLY_CAMP.seq) as "campCnt"
+    from T_CM_APLY_CAMP
+    where seq = (select aply_camp_seq from T_CM_CAMP_CONNECT_UUID where uuid = #{uuid})
+  </select>
+</mapper>

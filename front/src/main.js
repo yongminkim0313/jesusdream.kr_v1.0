@@ -9,13 +9,19 @@ import { registerPlugins } from '@/plugins'
 
 // Components
 import App from './App.vue'
+
 import axios from 'axios';
 import { createStore } from 'vuex';
 
 // Composables
+import VueCookies from "vue-cookies";
+
 import { createApp } from 'vue'
 
-const app = createApp(App)
+const app = createApp(App).use(VueCookies, {
+    expireTimes: "10d",
+    secure: true,
+})
 
 app.config.globalProperties.$axios = axios
 app.config.globalProperties.$filters = {
@@ -38,13 +44,20 @@ app.config.globalProperties.$filters = {
 
 import { socketStore } from '@/modules/socketStore';
 import { mapStore } from '@/modules/mapStore';
-
-const store = createStore({ modules: { socketStore, mapStore} });
-
 import { Socket } from '@/modules/socketService';
-const socket = new Socket(store);
-store.dispatch("socketStore/registSocket", socket);
-store.dispatch("mapStore/registSocket", socket);
+import createWebSocketPlugin from '@/modules/plugin';
+const socket = new Socket();
+
+
+
+const plugin = createWebSocketPlugin(socket)
+const store = createStore({
+    modules: { socketStore, mapStore },
+    plugins: [plugin],
+});
+
+// store.dispatch("socketStore/registSocket", socket);
+// store.dispatch("mapStore/registSocket", socket);
 
 registerPlugins(app)
 

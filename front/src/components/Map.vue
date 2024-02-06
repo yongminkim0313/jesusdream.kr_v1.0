@@ -1,5 +1,5 @@
 <template>
-    <div ref="dmap" style="width: 100%; height: 350px; background:rgb(233,233,233);"></div>
+    <div ref="dmap" style="width: 100%; height: 200px; background:rgb(233,233,233);"></div>
 </template>
 <script setup>
 import Avatar  from '@/components/Avatar.vue';

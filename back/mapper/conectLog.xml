@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="connectLog">  
+  <select id="selectConnectLog">
+    SELECT 
+      a.conect_sn, 
+      a.conect_dt, 
+      a.conect_url, 
+      a.menu_nm, 
+      a.os_knd, 
+      a.os_nm, 
+      a.browser_nm, 
+      a.ip_adres, 
+      a.ref_url,
+      a.prmanent_cookie, 
+      a.tmpr_cookie, 
+      a.kakao_id, 
+      b.nickname, 
+      b.thumbnail_image_url,
+      b.last_login_at
+    FROM T_CM_CONECT_LOG a
+    LEFT OUTER JOIN T_CM_USER b ON a.KAKAO_ID = b.KAKAO_ID
+    where 1=1
+    <if test="searchType == 'search'">
+      and date(a.conect_dt) = DATE_FORMAT(#{dt}, '%Y-%m-%d')
+    </if>
+    <if test="searchType == 'isLogin'">
+      and a.kakao_id <> 0
+    </if>
+    <if test="searchType == 'isNotLogin'">
+      and a.kakao_id = 0
+    </if>
+    order by a.conect_dt desc
+  </select>
+
+  <insert id="insertConnectLog">
+  INSERT INTO T_CM_CONECT_LOG (
+    conect_url,
+    conect_dt,
+    menu_nm,
+    os_knd,
+    os_nm,
+    browser_nm,
+    ip_adres,
+    ref_url,
+    prmanent_cookie,
+    tmpr_cookie,
+    kakao_id
+  ) VALUES (
+    #{conectUrl},
+    #{conectDt},
+    #{menuNm},
+    #{osKnd},
+    #{osNm},
+    #{browserNm},
+    #{ipAdres},
+    #{refUrl},
+    #{prmanentCookie},
+    #{tmprCookie},
+    #{kakaoId}
+  )
+  </insert>
+  <select id="selectLogDt">
+    select DATE_FORMAT(now(), '%Y-%m-%d') as dt from dual
+	union 
+	SELECT 
+      DATE_FORMAT(a.conect_dt, '%Y-%m-%d') as dt
+    FROM T_CM_CONECT_LOG a
+    LEFT OUTER JOIN T_CM_USER b ON a.KAKAO_ID = b.KAKAO_ID
+    group by date(a.conect_dt)
+    order by dt desc
+  </select>
+</mapper>

@@ -32,19 +32,8 @@ export const mapStore = {
         },
         registSocket({ state, commit, dispatch }, socket) {
             commit("registSocket", socket);
-            socket.on('from server', function ({userInfo, sendData}, callback) {
-                navigator.geolocation.getCurrentPosition((location) => {
-                    const { coords: { latitude, longitude }, timestamp } = location;
-                    var locMove = new kakao.maps.LatLng(latitude, longitude);
-                    state.map.panTo(locMove);//내 현재위치로 이동
-                    state.location = { latitude, longitude };
-                    dispatch("drawLocation", Object.assign({ latitude, longitude }, userInfo, sendData));
-                    callback({latitude, longitude, timestamp});
-                });
-            });
-            socket.on('from server drawLocation', (data) => {
-                dispatch("drawLocation", data);
-            })
+            
+            
             
         },
         async setMap({ state, commit, dispatch }, mapDiv) {
@@ -55,15 +44,15 @@ export const mapStore = {
         },
         drawLocation({ state, commit }, data) {
             // console.log(data)
-            var { latitude, longitude, thumbnailImageUrl, nickname} = data;
+            var { latitude, longitude, thumbnailImageUrl, nickname, church} = data;
             if (!thumbnailImageUrl || !nickname) return;
             if (state.customOverlays.has(nickname)) { //기존에 있으면 지움.
                 var temp = state.customOverlays.get(nickname);
                 // console.log("delete customOverlays", temp);
                 temp.setMap(null);//오버레이 삭제
             }
-            var content = `<div class="mx-auto text-center"><div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat"><div class="v-responsive v-img" aria-label=""><div class="v-responsive__sizer" style="padding-bottom: 100%;"></div><img class="v-img__img v-img__img--cover" src="${thumbnailImageUrl}" alt="" style=""></div><span class="v-avatar__underlay"></span></div><h3>${nickname}</h3></div>`
-                content+=`<h3 id="${state.socket.id}"></h3>`
+            var content = `<div class="mx-auto text-center"><div class="v-avatar v-theme--light v-avatar--density-default v-avatar--size-default v-avatar--variant-flat"><div class="v-responsive v-img" aria-label=""><div class="v-responsive__sizer" style="padding-bottom: 100%;"></div><img class="v-img__img v-img__img--cover" src="${thumbnailImageUrl}" alt="" style=""></div><span class="v-avatar__underlay"></span></div><h3>${church}${nickname}</h3></div>`
+                content+=`<h3 id="${church}"></h3>`
             var customOverlay = new kakao.maps.CustomOverlay({
                 position: new kakao.maps.LatLng(latitude, longitude),
                 content: content,
@@ -73,6 +62,11 @@ export const mapStore = {
             state.customOverlays.set(nickname, customOverlay);
             // console.log("draw customOverlays", customOverlay);
             customOverlay.setMap(state.map); // 커스텀 오버레이를 지도에 표시합니다
+            commit("clearCustomOverlays");
+        },
+        moveMap({ state, commit, dispatch },{latitude, longitude}){
+            var locMove = new kakao.maps.LatLng(latitude, longitude);
+            state.map.panTo(locMove);//내 현재위치로 이동
         },
         drawMsg({ state, commit }, data){
             document.getElementById(state.socket.id).innerHTML= data.msg;

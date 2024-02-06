@@ -27,7 +27,9 @@
     v-model="enterText"
     label="메세지 입력"
     required
+    append-icon='mdi-send'
     @keypress.enter.prevent="doSend"
+    @click:append="doSend"
   ></v-text-field>
 </template>
 

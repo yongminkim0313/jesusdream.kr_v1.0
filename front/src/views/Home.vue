@@ -1,4 +1,5 @@
 <template>
+  
   <v-card class="mx-auto" elevation="5">
     <v-card-title>2024 겨울 YOUTHVISION CAMP</v-card-title>
     <v-card-subtitle>12 120 3000 "하나님 나라를 세우라"</v-card-subtitle>
@@ -15,16 +16,8 @@
       ></iframe>
     </div>
   </v-card>
-  <Map></Map>
-  <ChatList></ChatList>
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <BoardList ref="boardlist" class="box" />
+  
+  <BoardList ref="boardlist"/>
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
@@ -36,8 +29,8 @@
 
 <script setup>
 import BoardList from "@/components/BoardList.vue";
-import ChatList from "@/components/ChatList.vue";
-import Map from "@/components/Map.vue";
+
+
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
@@ -48,26 +41,26 @@ const currentUserList = computed(
   () => store.getters["socketStore/currentUserList"]
 );
 
-const boardlist = ref(null);
-onMounted(() => {
-  // axios.get("/api/public/testText").then(({ data }) => {
-  //   console.log(data.msg);
-  //   testText.value = data.msg;
-  // });
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("tada");
-        } else {
-          entry.target.classList.remove("tada");
-        }
-      });
-    },
-    { threshold: [0.3] }
-  );
-  io.observe(boardlist.value.$el);
-});
+// const boardlist = ref(null);
+// onMounted(() => {
+//   // axios.get("/api/public/testText").then(({ data }) => {
+//   //   console.log(data.msg);
+//   //   testText.value = data.msg;
+//   // });
+//   const io = new IntersectionObserver(
+//     (entries) => {
+//       entries.forEach((entry) => {
+//         if (entry.isIntersecting) {
+//           entry.target.classList.add("tada");
+//         } else {
+//           entry.target.classList.remove("tada");
+//         }
+//       });
+//     },
+//     { threshold: [0.3] }
+//   );
+//   io.observe(boardlist.value.$el);
+// });
 </script>
 
 <style>

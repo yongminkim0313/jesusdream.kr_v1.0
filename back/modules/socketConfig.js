@@ -55,25 +55,13 @@ module.exports = (server, app) => {
     }
 
     var interval = null
-    var setInter = function (socket) {
+    var setInter = function (io) {
         if (interval) clearInterval(interval);
-        setLocation(socket);
-        interval = setInterval(() => {
-            setLocation(socket);
-        }, 10000);
+        interval = setInterval(() => { setLocation(io); }, 10000);
+        setLocation(io);
     }
 
-    var setLocation = function (socket) {
-        console.log("setLocation");
-        socket.emit('from server', {}, function (location) {
-            socket.handshake.session.location = location;
-            socket.handshake.session.save();
-            console.log(socket.handshake.session);
-            var { location, userInfo} = socket.handshake.session;
-            socket.broadcast.emit('from server drawLocation', Object.assign(location, userInfo))
-            socket.emit('from server drawLocation', Object.assign(location, userInfo))
-        });
-    }
+    var setLocation = function (io) { io.emit('from server', {}); }
 
     app.io.on('connection', (socket) => {
         try {
@@ -89,13 +77,28 @@ module.exports = (server, app) => {
                 socket.handshake.session.userInfo = userInfo;
                 socket.handshake.session.save();
 
-                setInter(socket);
+                setInter(app.io);
 
                 // socket.emit('login', userInfo);
                 callback(userInfo);
                 userList.set(socket.id, userInfo)
                 const users = loginUsers(app.io);
                 // console.log(countRoom(roomName), publicRooms());
+            });
+
+            socket.on('login admin', async (answer, callback) => {
+                console.log('login admin', answer);
+                if(!socket.handshake.session.userInfo){
+                    callback({allow:false, msg: "로그인이 필요합니다."});
+                    console.log("로그인이 필요합니다.");
+                    return;
+                }
+                if(answer == "예수가답이다"){
+                        socket.handshake.session.userInfo.isAdmin = true;
+                        callback({allow:true, msg: "관리자 로그인 성공!", code: 1});
+                }else{
+                    callback({allow:false, msg: "답변이 틀렸습니다."});
+                }
             });
             socket.on('logout', (data, callback) => {
                 if (interval) clearInterval(interval);
@@ -117,6 +120,14 @@ module.exports = (server, app) => {
                     socket.emit('error', { msg: "사용자 로그인이 필요합니다." });
                 }
             });
+
+            socket.on('from client',({latitude, longitude, timestamp}, callback)=>{
+                // console.log(latitude, longitude, timestamp);
+                socket.handshake.session.location = {latitude, longitude, timestamp} ;
+                socket.handshake.session.save();
+                var { location, userInfo} = socket.handshake.session;
+                app.io.emit('from server drawLocation', Object.assign(location, userInfo))
+            })
             socket.on('disconnect', () => {
                 if (interval) clearInterval(interval);
                 userList.delete(socket.id);
