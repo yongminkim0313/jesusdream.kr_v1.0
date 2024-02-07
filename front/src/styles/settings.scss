@@ -8,6 +8,12 @@
 // @use 'vuetify/settings' with (
 //   $color-pack: false
 // );
+
+@import "src/styles/variables.scss";
+
+$chip-font-weight: 800;
+$chip-height: 90px;
+
 .box {
     margin: 0 auto 200px auto;
     border-radius: 5px;
@@ -53,3 +59,4 @@
       animation-name: tada;
       opacity: 1;
   }
+

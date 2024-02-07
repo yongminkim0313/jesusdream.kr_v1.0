@@ -1,8 +1,8 @@
 import io from "socket.io-client";
 export const Socket = function () {
-    this.socket = io(location.href, {
+    this.socket = io(location.host, {
         reconnectionDelay: 10000,
-        autoConnect: true,
+        autoConnect: false,
         path: "/my-ws",
     });
     return this.socket;

@@ -48,16 +48,13 @@ import { Socket } from '@/modules/socketService';
 import createWebSocketPlugin from '@/modules/plugin';
 const socket = new Socket();
 
-
-
 const plugin = createWebSocketPlugin(socket)
 const store = createStore({
     modules: { socketStore, mapStore },
     plugins: [plugin],
 });
 
-// store.dispatch("socketStore/registSocket", socket);
-// store.dispatch("mapStore/registSocket", socket);
+socket.connect()
 
 registerPlugins(app)
 

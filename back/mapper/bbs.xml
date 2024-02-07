@@ -25,8 +25,11 @@
       where a.delyn = 'N'
       and a.upp_idx = 0
     ) as v
-    where rownum <![CDATA[ < 5 ]]>
-
+    where rownum <![CDATA[ >= ]]> #{startIdx}
+    and rownum <![CDATA[ <= ]]> #{endIdx}
+  </select>
+  <select id="selectBoardListCnt">
+  select count(*) as cnt from T_CM_BBS where delyn = 'N' and upp_idx = 0
   </select>
 
   <select id="selectBbsCnt">

@@ -25,20 +25,6 @@ module.exports = (server, app) => {
         },
     } = app.io;
 
-    function publicRooms() {
-        const publicRooms = [];
-        rooms.forEach((_, key) => {
-            if (sids.get(key) === undefined) {
-                publicRooms.push(key);
-            }
-        });
-        return publicRooms;
-    }
-
-    function countRoom(roomName) {
-        return app.io.sockets.adapter.rooms.get(roomName)?.size;
-    }
-
     function loginUsers(io) {
         const users = []
         const roomUser = app.io.sockets.adapter.rooms.get(roomName);
@@ -83,7 +69,6 @@ module.exports = (server, app) => {
                 callback(userInfo);
                 userList.set(socket.id, userInfo)
                 const users = loginUsers(app.io);
-                // console.log(countRoom(roomName), publicRooms());
             });
 
             socket.on('login admin', async (answer, callback) => {
@@ -139,7 +124,6 @@ module.exports = (server, app) => {
                 userList.delete(socket.id);
                 const users = loginUsers(app.io);
                 console.log('유저가 나갔다. disconnecting');
-                // socket.rooms.forEach(room => socket.to(room).emit("bye", countRoom(room) - 1));
             });
         } catch (err) { console.error(err) }
     });

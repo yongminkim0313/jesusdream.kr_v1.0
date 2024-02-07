@@ -47,8 +47,6 @@ export default function createWebSocketPlugin(socket) {
             console.error(data);
         })
 
-        socket.connect()
-
         store.subscribeAction((action, state) => {
             // console.log(action)
             // console.log(action.type)
