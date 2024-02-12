@@ -25,6 +25,14 @@
   </v-card>
   <v-container fluid>
     <v-row>
+      <v-col class="pb-0">
+        <v-chip link>
+          <v-icon start icon="mdi-label"></v-icon> total :
+          {{ totalCnt }}</v-chip
+        >
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col
         cols="12"
         lg="3"
@@ -78,9 +86,10 @@ export default {
   },
   created: function () {
     var sc = this.$cookies.get("showCount");
-    if(sc){ this.showCount = sc; }
+    if (sc) {
+      this.showCount = sc;
+    }
     this.getBoardList();
-    this.getBoardTotalCnt();
   },
   beforeCreate: function () {
     console.log("beforCreate");
@@ -99,15 +108,12 @@ export default {
       });
     },
     getBoardList: async function () {
-      var { data } = await this.$axios.get("/api/public/board", {
+      var {
+        data: { list, totalCnt },
+      } = await this.$axios.get("/api/public/board", {
         params: { page: this.page, showCount: this.showCount },
       });
-      this.boardList = data;
-    },
-    getBoardTotalCnt: async function () {
-      var {
-        data: { totalCnt },
-      } = await this.$axios.get("/api/public/board/totalcnt");
+      this.boardList = list;
       this.totalCnt = totalCnt;
       this.setPageLength();
     },

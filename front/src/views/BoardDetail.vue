@@ -23,7 +23,7 @@
         <v-container>
             <v-row>
                 <v-col cols="12" lg="4" md="4" sm="6">
-                    <span><h5>등록일시</h5> <h4>{{ boardDetail.rgstDt | formatDate}}</h4></span>
+                    <span><h5>등록일시</h5> <h4>{{ $filters.formatDate(boardDetail.rgstDt)}}</h4></span>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="3">
                     <h5>조회수</h5> 

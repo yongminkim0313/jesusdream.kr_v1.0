@@ -25,7 +25,7 @@
             <template v-slot:body="{items, headers}">
               <tbody name="list" v-if="items.length > 0">
                 <tr v-for="(val , index) in items" :key="index" class="item-row">
-                  <td class="pa-0" style="width:50px; font-size:9px;">{{val.conectDt | formatDate}}</td>
+                  <td class="pa-0" style="width:50px; font-size:9px;">{{ $filters.formatDate(val.conectDt)}}</td>
                     <td class="pa-0" style="width:60px; font-size:9px;">{{val.nickname}}</td>  
                     <td class="pa-0" style="width:33px; font-size:9px;"><v-avatar size="30px" ><v-img :src="val.thumbnailImageUrl"></v-img> </v-avatar></td>  
                     <td class="pa-0" style="width:80px; font-size:9px;">{{val.osNm}}</td>

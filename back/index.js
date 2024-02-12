@@ -8,14 +8,15 @@ const fs = require('fs');
 
 const app = express();
 
-app.get('/api/public/testText', (req, res) => {
-    res.status(200).json({ msg: '이것은 테스트입니다.' })
-})
-
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.get('/', function(req,res,next){
+    console.log('req.url=============',req.url)
+    res.sendFile(path.join(__dirname, "./public/index.html"));
+})
+app.use(require('connect-history-api-fallback')());
+app.use(express.static(path.join(__dirname, 'public')));
 
 require('./services/publicService')(app);
 require('./services/userService.js')(app);

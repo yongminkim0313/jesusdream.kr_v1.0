@@ -1,6 +1,14 @@
 <template>
   <v-container fluid>
     <v-row>
+      <v-col class="pb-0">
+        <v-chip link>
+          <v-icon start icon="mdi-label"></v-icon> total :
+          {{ totalCnt }}</v-chip
+        >
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col
         cols="12"
         lg="3"
@@ -10,14 +18,14 @@
         :key="board.idx"
       >
         <v-card
-          class="pa-2 my-2"
+          class="py-0 my-0"
           :title="board.title"
           :subtitle="$filters.formatDate(board.rgstDt)"
           style="height: 220px; white-space: nowrap; overflow: hidden"
           elevation="10"
         >
           <template v-slot:append>
-            <v-avatar size="24">
+            <v-avatar size="40" variant="tonal">
               <v-img :src="board.thumbnailImageUrl" :alt="board.idx"></v-img>
             </v-avatar>
           </template>
@@ -36,6 +44,7 @@ export default {
   data() {
     return {
       boardList: [],
+      totalCnt: 0,
     };
   },
   created: function () {
@@ -49,8 +58,11 @@ export default {
       });
     },
     getBoardList: async function () {
-      var { data } = await this.$axios.get("/api/public/board");
-      this.boardList = data;
+      var {
+        data: { list, totalCnt },
+      } = await this.$axios.get("/api/public/board");
+      this.boardList = list;
+      this.totalCnt = totalCnt;
     },
   },
 };

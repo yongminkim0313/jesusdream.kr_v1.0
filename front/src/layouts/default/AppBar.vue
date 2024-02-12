@@ -13,7 +13,7 @@
       :color="currentConnection == 'connected' ? 'green' : 'red'"
       class="text-red-lighten-2"
     >
-      <v-app-bar-title> YOUTHVISION </v-app-bar-title>
+      <v-app-bar-title @click="goHome"> YOUTHVISION </v-app-bar-title>
     </v-badge>
 
     <template v-slot:append>
@@ -101,7 +101,12 @@
 
     <v-list-item-action start>
       <v-spacer></v-spacer>
-      <v-dialog width="500" v-model="dialogActive">
+      <v-dialog
+        width="500"
+        v-model="dialogActive"
+        @update:model-value="dialogOpen"
+        eager
+      >
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon="mdi-cog" variant="plain"> </v-btn>
         </template>
@@ -110,6 +115,8 @@
           <v-card title="관리자폐이지 접속">
             <v-card-text>
               <v-text-field
+                autofocus
+                ref="myinput"
                 v-model="answer"
                 label="답은?"
                 :hint="loginAdminHint"
@@ -187,6 +194,15 @@ const loginAdmin = () => {
       dialogActive.value = false;
     },
   });
+};
+const goHome = () => {
+  router.push({ path: "/" });
+};
+var myinput = ref(null);
+const dialogOpen = (isOpen) => {
+  if (isOpen) {
+    console.log("open");
+  }
 };
 </script>
 

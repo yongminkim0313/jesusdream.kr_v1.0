@@ -14,12 +14,9 @@ module.exports = (app) => {
             startIdx = (page - 1) * showCount + 1;
             endIdx = page * showCount; // 1 * 10 
         }
-        const data = await db.getList('bbs', 'selectBoardList', { startIdx, endIdx })
-        res.status(200).json(data);
-    })
-    app.get('/api/public/board/totalcnt', async (req, res) => {
+        const list = await db.getList('bbs', 'selectBoardList', { startIdx, endIdx })
         const { cnt } = await db.getData('bbs', 'selectBoardListCnt', {});
-        res.status(200).json({totalCnt: cnt});
+        res.status(200).json({list: list, totalCnt: cnt});
     })
     app.get('/api/public/board/detail', async (req, res) => {
         var { idx } = req.query;
