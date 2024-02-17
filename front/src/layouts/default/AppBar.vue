@@ -58,9 +58,7 @@
       ></v-text-field>
       <v-btn type="submit" block class="mt-2">
         login
-        <v-icon :color="currentConnection == 'connected' ? 'green' : 'red'"
-          >mdi-circle</v-icon
-        >
+        <v-icon :color="currentConnection == 'connected' ? 'green' : 'red'">mdi-circle</v-icon>
       </v-btn>
     </v-form>
     <v-list-item
@@ -83,16 +81,22 @@
         @click="$router.push({ path: '/' })"
       ></v-list-item>
       <v-list-item
-        prepend-icon="mdi-forum"
+        prepend-icon="mdi-youtube"
         title="CAMP LIVE"
         value="CAMP LIVE"
         @click="$router.push({ path: '/camplive' })"
       ></v-list-item>
       <v-list-item
-        prepend-icon="mdi-forum"
+        prepend-icon="mdi-newspaper"
         title="NEWS CAST"
         value="NewsCast"
         @click="$router.push({ path: '/newscast' })"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-clipboard-text-outline"
+        title="YOUTHVISION 게시판"
+        value="BoardList"
+        @click="$router.push({ path: '/boardlist' })"
       ></v-list-item>
     </v-list>
     <v-list-item>
@@ -145,7 +149,8 @@ import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import UserList from "@/components/UserList.vue";
 import Map from "@/components/Map.vue";
-import ChatList from "@/components/ChatList.vue";
+import axios from "axios";
+
 const store = useStore();
 const router = useRouter();
 
@@ -162,7 +167,7 @@ const currentUserInfo = computed(
 const loginInfo = ref({ church: "", nickname: "" });
 
 if (location.hostname == "localhost") {
-  loginInfo.value = { church: "주님이꿈꾸신교회", nickname: "김용민" };
+  loginInfo.value = { church: "예수가답이다", nickname: "김용민" };
 }
 const show1 = ref(null);
 const rules = {
@@ -175,6 +180,7 @@ const submit = async function (event) {
   const results = await event;
   if (results.valid) {
     store.dispatch("socketStore/doLogin", loginInfo.value);
+    axios.post("/api/user/login", loginInfo.value);
   }
 };
 const logout = () => {

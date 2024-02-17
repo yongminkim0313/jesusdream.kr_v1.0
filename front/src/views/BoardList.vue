@@ -42,7 +42,7 @@
         :key="board.idx"
       >
         <v-card
-          class="pa-2 my-2"
+          class="pa-2 my-2 ck-content"
           :title="board.title"
           :subtitle="$filters.formatDate(board.rgstDt)"
           style="height: 220px; white-space: nowrap; overflow: hidden"
@@ -70,9 +70,17 @@
         ></v-pagination>
       </div>
     </v-row>
+    <v-row><v-btn @click="show=true;">작성</v-btn></v-row>
+    <v-row v-show="show">
+      <CKEditor></CKEditor>
+    </v-row>
   </v-container>
 </template>
   
+<script setup>
+import CKEditor from "@/components/CKEditor.vue";
+
+</script>
   <script>
 export default {
   data() {
@@ -82,6 +90,7 @@ export default {
       showCount: 4,
       pageLength: 0,
       totalCnt: 0,
+      show: false,
     };
   },
   created: function () {
@@ -113,6 +122,7 @@ export default {
       } = await this.$axios.get("/api/public/board", {
         params: { page: this.page, showCount: this.showCount },
       });
+
       this.boardList = list;
       this.totalCnt = totalCnt;
       this.setPageLength();

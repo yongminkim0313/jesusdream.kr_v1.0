@@ -45,5 +45,18 @@ module.exports = (app) => {
         res.status(200).json({msg:'success'});
     })
     
+    app.post('/api/user/login', async(req,res)=>{
+        console.log("세션 저장")
+        req.session.isAdmin = false;
+        var { church, nickname } = req.body;
+        if(church.indexOf('예수가') > -1 && church.indexOf('답이다') > -1 ){
+            req.session.isAdmin = true;
+            console.log("관리자 접속")
+        }
+        req.session.church = church;
+        req.session.nickname = nickname;
+        req.session.save();
+        res.status(200);
+    })
     
 }

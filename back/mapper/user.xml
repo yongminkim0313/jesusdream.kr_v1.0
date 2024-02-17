@@ -14,9 +14,24 @@
         #{kakaoId}, #{nickname}, #{thumbnailImageUrl}, #{email}, #{gender}, now()
     );
   </insert>
+  
   <update id="updateUser">
   update T_CM_USER set
     last_login_at = now()
   where kakao_id = #{kakaoId}
   </update>
+
+  <insert id="insertUpload">
+  insert into T_CM_UPLOAD (
+    fieldname, originalname, encoding, mimetype, size, destination, filename, path, rgst_dt, rgst_id
+  ) values (
+    #{fieldname}, #{originalname}, #{encoding}, #{mimetype}, #{size}, #{destination}, #{filename}, #{path}, now(), '김용민'
+  )
+  </insert>
+    <select id="selectUpload">
+  select
+    fieldname, originalname, encoding, mimetype, size, destination, filename, path, rgst_dt, rgst_id
+  from T_CM_UPLOAD
+  where filename = #{filename}
+  </select>
 </mapper>

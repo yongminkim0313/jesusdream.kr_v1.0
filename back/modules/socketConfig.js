@@ -1,8 +1,7 @@
 const db = require('./dbConnect')
 const roomName = "testRoom";
-const session = require('express-session');
 
-module.exports = (server, app) => {
+module.exports = (server, app, session) => {
     const userList = new Map();
 
     app.io = require('socket.io')(server, {
@@ -13,10 +12,8 @@ module.exports = (server, app) => {
         cleanupEmptyChildNamespaces: true,
         timeout: 3000,
     });
-    const MySQLStore = require("express-mysql-session")(session);
-    var options = { host: "localhost", port: "3306", user: "youthvisionUser", password: "qwer1234", database: "youthvisionDB", };
-    var sessionStore = new MySQLStore(options);
-    var session_io = session({ key: "jesusdream", secret: "jesusdream.kr", resave: false, saveUninitialized: false, store: sessionStore, })
+    
+    var session_io = session({ key: "jesusdream", secret: "jesusdream.kr", resave: false, saveUninitialized: false })
     var ios = require("express-socket.io-session"); // 소켓 내에서 세션데이터 접근 가능하도록하는 모듈
     app.io.use(ios(session_io, { autoSave: true }));  // 모듈과 세션 연결
     const {

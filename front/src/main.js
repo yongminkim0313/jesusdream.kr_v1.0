@@ -17,11 +17,12 @@ import { createStore } from 'vuex';
 import VueCookies from "vue-cookies";
 
 import { createApp } from 'vue'
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 const app = createApp(App).use(VueCookies, {
     expireTimes: "10d",
     secure: true,
-})
+}).use( CKEditor )
 
 app.config.globalProperties.$axios = axios
 app.config.globalProperties.$filters = {

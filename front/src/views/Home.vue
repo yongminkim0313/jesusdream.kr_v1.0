@@ -16,19 +16,13 @@
       ></iframe>
     </div>
   </v-card>
-  
   <BoardList ref="boardlist"/>
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  
 </template>
 
 <script setup>
 import BoardList from "@/components/BoardList.vue";
+
 
 
 import axios from "axios";
@@ -40,7 +34,10 @@ const store = useStore();
 const currentUserList = computed(
   () => store.getters["socketStore/currentUserList"]
 );
-
+// axios.get("/api/public/upload/9db4e216aea5e6db34aef57e26ea9cce")
+// .then(({ data }) => {
+//     console.log(data.msg);
+// });
 // const boardlist = ref(null);
 // onMounted(() => {
 //   // axios.get("/api/public/testText").then(({ data }) => {

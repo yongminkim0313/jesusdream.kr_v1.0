@@ -1,5 +1,6 @@
 back/node_modules/*
 back/public/*
+back/uploads/*
 back/undefined/*
 
 front/node_modules/*
