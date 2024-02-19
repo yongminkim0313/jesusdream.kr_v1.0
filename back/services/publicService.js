@@ -78,7 +78,7 @@ module.exports = (app) => {
                 } else {
                     db.setData('bbs', 'updateBbs', req.body)
                     .then((row) => {
-                        res.status(200).json({msg:"업데이트되었습니다."});
+                        res.status(200).json({msg:"수정되었습니다."});
                     })
                 }
             })

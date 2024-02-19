@@ -1,13 +1,30 @@
 <template>
-  <v-form style="max-width:900px; width:900px;" validate-on="submit lazy" @submit.prevent="submit" class="ma-2">
-    <v-text-field
-      v-model="title"
-      label="제목"
-      :rules="[rules.required]"
-    ></v-text-field>
-    <Ckeditor :editor="editor" v-model="text" :config="editorConfig"></Ckeditor>
-    <v-btn type="submit" block class="mt-2">저장</v-btn>
-  </v-form>
+  <v-card>
+    <v-card-title>
+      <v-text-field
+        v-model="title"
+        label="제목"
+        :rules="[rules.required]"
+      ></v-text-field>
+    </v-card-title>
+    <v-card-text>
+      <v-form
+        style="width: 100%"
+        validate-on="submit lazy"
+        @submit.prevent="submit"
+        class="pa-2"
+      >
+        <Ckeditor
+          :editor="editor"
+          v-model="text"
+          :config="editorConfig"
+        ></Ckeditor>
+      </v-form>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn type="submit" block class="mt-2">저장</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script setup>
@@ -36,11 +53,30 @@ import {
   ImageResize,
 } from "@ckeditor/ckeditor5-image";
 
-import { ref, watch } from "vue";
+import { ref, watch, defineProps, computed } from "vue";
 import axios from "axios";
 
+const props = defineProps({
+  title: { type: String, default: "" },
+  contents: { type: String, dafault: "" },
+  idx: { type: Number, dafault: 0 },
+});
+console.log(props);
 let title = ref();
 let text = ref();
+
+watch(
+  () => props.title,
+  (cur, prev) => {
+    title.value = cur;
+  }
+);
+watch(
+  () => props.contents,
+  (cur, prev) => {
+    text.value = cur;
+  }
+);
 
 const emits = defineEmits(["update:modelValue"]);
 
@@ -75,6 +111,13 @@ const editorConfig = {
   extraPlugins: [CustomUploadAdapterPlugin],
   height: "200",
   language: "ko",
+  ui: {
+    poweredBy: {
+      position: "inside",
+      side: "left",
+      label: "This is",
+    },
+  },
   plugins: [
     Essentials,
     Bold,
@@ -140,24 +183,23 @@ const editorConfig = {
   },
 };
 
-
 const submit = async function (event) {
   const results = await event;
   if (results.valid) {
     axios
-    .post("/api/public/bbs", {
-      idx: 0,
-      title: title.value,
-      contents: text.value,
-      atchmnflId: 0,
-    })
-    .then((res) => {
-      alert(res.data.msg);
-      clear();
-    })
-    .catch((err) => {
-      alert(err.response.data.msg);
-    });
+      .post("/api/public/bbs", {
+        idx: props.idx,
+        title: title.value,
+        contents: text.value,
+        atchmnflId: 0,
+      })
+      .then((res) => {
+        alert(res.data.msg);
+        clear();
+      })
+      .catch((err) => {
+        alert(err.response.data.msg);
+      });
   }
 };
 const clear = () => {
@@ -168,7 +210,7 @@ const clear = () => {
 
 <style>
 .ck.ck-editor {
-  width: 100%;
+  /* width: 100%; */
   margin: 0 auto;
 }
 
