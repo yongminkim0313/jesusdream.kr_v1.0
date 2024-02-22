@@ -3,10 +3,14 @@
     scroll-behavior="fade-image"
     image="https://picsum.photos/1920/1080?random"
   >
-    <template v-slot:prepend>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    </template>
-
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn color="primary" v-bind="props">
+          접속자 {{ currentUserList.length }}</v-btn
+        >
+      </template>
+      <UserList></UserList>
+    </v-menu>
     <v-badge
       floating
       dot
@@ -16,24 +20,19 @@
       <v-app-bar-title @click="goHome"> YOUTHVISION </v-app-bar-title>
     </v-badge>
 
-    <template v-slot:append>
+    <template v-slot:prepend>
       <!-- <v-btn icon="mdi-dots-vertical">
-        <template v-slot:append>
-          <UserList></UserList>
-
-        </template>
-      </v-btn> -->
-      <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-btn color="primary" v-bind="props">
-            접속자 {{ currentUserList.length }}</v-btn
-          >
-        </template>
-        <UserList></UserList>
-      </v-menu>
+    <template v-slot:append>
+      <UserList></UserList>
+      
+    </template>
+  </v-btn> -->
+    </template>
+    <template v-slot:append>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     </template>
   </v-app-bar>
-  <v-navigation-drawer v-model="drawer" temporary>
+  <v-navigation-drawer v-model="drawer" temporary location="right">
     <v-form
       v-if="currentLogin == 'logout'"
       validate-on="submit lazy"
@@ -58,7 +57,9 @@
       ></v-text-field>
       <v-btn type="submit" block class="mt-2">
         login
-        <v-icon :color="currentConnection == 'connected' ? 'green' : 'red'">mdi-circle</v-icon>
+        <v-icon :color="currentConnection == 'connected' ? 'green' : 'red'"
+          >mdi-circle</v-icon
+        >
       </v-btn>
     </v-form>
     <v-list-item

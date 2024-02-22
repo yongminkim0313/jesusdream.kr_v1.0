@@ -1,49 +1,62 @@
 <template>
   <v-card class="mx-auto" elevation="5" :loading="loading">
-    <v-card-title>
-      <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-btn color="primary" v-bind="props"> 캠프실황 {{ select.yearNm }} </v-btn>
-        </template>
-        <v-list>
-          <v-list-item
-            v-for="(item, index) in search"
-            :key="item.yearCd"
-            :value="item.yearCd"
+    <v-container>
+      <v-row>
+        <v-col>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" v-bind="props">
+                캠프실황 {{ select.yearNm }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in search"
+                :key="item.yearCd"
+                :value="item.yearCd"
+              >
+                <v-list-item-title @click="setSelect(item)">
+                  {{ item.yearNm }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-card
+            class="mx-auto"
+            elevation="5"
+            v-for="item in youtubeList"
+            :key="item.src"
           >
-            <v-list-item-title @click="setSelect(item)">
-              {{ item.yearNm }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-card-title>
-    <v-card
-      class="mx-auto"
-      elevation="5"
-      v-for="item in youtubeList"
-      :key="item.src"
-    >
-      <v-card-title>{{ item.title }}</v-card-title>
-      <v-card-subtitle>[{{ $filters.formatDate(item.publishedAt) }}] {{ item.subtitle }}</v-card-subtitle>
-      <div id="area">
-        <iframe
-          id="video"
-          width="100%"
-          height="100%"
-          :src="'https://www.youtube.com/embed/' + item.src"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </v-card>
+            <v-card-title>{{ item.title }}</v-card-title>
+            <v-card-subtitle
+              >[{{ $filters.formatDate(item.publishedAt) }}]
+              {{ item.subtitle }}</v-card-subtitle
+            >
+            <div class="area">
+              <iframe
+                class="video"
+                width="100%"
+                height="100%"
+                :src="'https://www.youtube.com/embed/' + item.src"
+                :title="item.title"
+                frameborder="0"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-divider class="pa-5"></v-divider>
     <v-card class="mx-auto pb-5">
-      <v-btn block @click="youtube()" class="mx-auto"
-        >유스비전 캠프 영상 더보기</v-btn
-      >
+      <v-btn block @click="youtube()" class="mx-auto">
+        유스비전 캠프 영상 더보기
+      </v-btn>
     </v-card>
   </v-card>
 </template>
@@ -110,12 +123,12 @@ export default {
 };
 </script>
 <style>
-#area {
+.area {
   position: relative; /* absolute는 부모가 relative일 때 부모를 따라간다. */
   width: 100%;
   padding-bottom: 56.25%; /* 16:9 비율 */
 }
-#video {
+.video {
   position: absolute;
   width: 100%; /* 부모에 맞게 꽉 채운다. */
   height: 100%;
