@@ -18,7 +18,7 @@
         :key="board.idx"
       >
         <v-card
-          class="py-0 my-0"
+          class="pa-2 my-2 ck-content"
           :title="board.title"
           :subtitle="$filters.formatDate(board.rgstDt)"
           style="height: 220px; white-space: nowrap; overflow: hidden"
