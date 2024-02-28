@@ -69,29 +69,31 @@ module.exports = (app) => {
             '2023w':'PLZgf7s2LDEyvJEpb54f9v3Acqw9Q6mcC7',
             '2022s':'PLZgf7s2LDEysLGvp02ZHSzxCwc9DiGNuO',
         }
-        var {year} = req.query;
+        var {year, cnt} = req.query;
         
         service.playlistItems.list({
             key: 'AIzaSyCwH_L35xEqEB0MqOPd6hrmlAkTNLVKueo',
             part: 'snippet',
             playlistId: yearVideoId[year],
-            maxResults: 20
+            maxResults: cnt
         }, function (err, response) {
+            console.log(response.data);
             var list = [];
             for (var v of response.data.items) {
                 var tmp = v.snippet
-                if (tmp.resourceId) {
+                if (tmp.resourceId && tmp.thumbnails.medium) {
                     var item = {
                         src: tmp.resourceId.videoId,
                         subtitle: tmp.description,
                         title: tmp.title,
-                        publishedAt: tmp.publishedAt
+                        publishedAt: tmp.publishedAt,
+                        thumbnailImageUrl: tmp.thumbnails.medium.url
                     }
                     list.push(item);
-                    console.log(item)
+                    // console.log(item)
                 }
             }
-            res.status(200).json(list);
+            res.status(200).json({list, totalCnt:response.data.pageInfo.totalResults});
         })
     })
 

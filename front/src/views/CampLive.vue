@@ -6,7 +6,7 @@
           <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn color="primary" v-bind="props">
-                캠프실황 {{ select.yearNm }}
+                캠프실황 {{ select.yearNm }} total : {{ totalCnt }}
               </v-btn>
             </template>
             <v-list>
@@ -30,6 +30,7 @@
             elevation="5"
             v-for="item in youtubeList"
             :key="item.src"
+            :ref="item.src"
           >
             <v-card-title>{{ item.title }}</v-card-title>
             <v-card-subtitle
@@ -67,6 +68,7 @@ export default {
     return {
       loading: true,
       youtubeList: [],
+      totalCnt: 0,
       search: [
         { yearNm: "2024년 겨울", yearCd: "2024w" },
         { yearNm: "2023년 여름", yearCd: "2023s" },
@@ -77,7 +79,31 @@ export default {
     };
   },
   created() {
+    var { yearCd } = this.$route.query;
+    if (yearCd) {
+      this.select = this.search.find((item)=>{ return item.yearCd == yearCd;});
+    }
     this.getPlaylist();
+  },
+  watch: {
+    youtubeList() {
+      // 화면에 추가된 후 동작하도록
+      this.$nextTick(() => {
+        var { youtubeSrc } = this.$route.query;
+        console.log(youtubeSrc);
+        let re = this.$refs[youtubeSrc][0];
+        setTimeout(() => {
+          // re.$el.scrollTo({ top: re.$el.scrollHeight, behavior: "smooth" });
+          var my_element = re.$el;
+
+          my_element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest",
+          });
+        }, 500);
+      });
+    },
   },
   methods: {
     youtube: function () {
@@ -86,27 +112,16 @@ export default {
     },
     initialize() {
       this.loading = true;
-      this.$axios
-        .get("/api/public/youtube", { params: { type: "캠프실황" } })
-        .then((result) => {
-          this.youtubeList = result.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .then(() => {
-          this.loading = false;
-        });
     },
     getPlaylist: function () {
       var _this = this;
       this.$axios
         .get("/api/user/youtube/playlistItems", {
-          params: { year: _this.select.yearCd },
+          params: { year: _this.select.yearCd, cnt: 99 },
         })
-        .then((result) => {
-          console.log(result.data);
-          this.youtubeList = result.data;
+        .then(({ data: { list, totalCnt } }) => {
+          this.youtubeList = list;
+          this.totalCnt = totalCnt;
         })
         .catch((err) => {
           console.log(err);

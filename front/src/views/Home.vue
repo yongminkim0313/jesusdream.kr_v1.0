@@ -17,12 +17,12 @@
     </div>
   </v-card>
   <BoardList ref="boardlist"/>
-  
+  <YoutubeList></YoutubeList>
 </template>
 
 <script setup>
 import BoardList from "@/components/BoardList.vue";
-
+import YoutubeList from "@/components/YoutubeList.vue";
 
 
 import axios from "axios";
