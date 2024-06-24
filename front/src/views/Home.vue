@@ -2,7 +2,11 @@
   
   <v-card class="mx-auto" elevation="5">
     <v-card-title>2024 여름 YOUTHVISION CAMP</v-card-title>
+<<<<<<< HEAD
     <v-card-subtitle>12 120 3000 "다음세대들이여 성령의 바람을 일으켜라 24.8.6~8"</v-card-subtitle>
+=======
+    <v-card-subtitle>"다음세대들이여 성령의 바람을 일으켜라 24.8.6~8"</v-card-subtitle>
+>>>>>>> 01170983b5d26ea98adcb667aeb5bc71d1f4b8b3
     <div id="area">
       <iframe
       id="video"

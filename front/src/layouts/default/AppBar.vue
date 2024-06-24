@@ -1,33 +1,10 @@
 <template>
-  <v-app-bar
-    scroll-behavior="fade-image"
-    image="https://picsum.photos/1920/1080?random"
-  >
-    <v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn color="primary" v-bind="props">
-          접속자 {{ currentUserList.length }}</v-btn
-        >
-      </template>
-      <UserList></UserList>
-    </v-menu>
-    <v-badge
-      floating
-      dot
-      :color="currentConnection == 'connected' ? 'green' : 'red'"
-      class="text-red-lighten-2"
-    >
-      <v-app-bar-title @click="goHome"> YOUTHVISION </v-app-bar-title>
-    </v-badge>
+  <v-app-bar scroll-behavior="fade-image" image="https://picsum.photos/1920/1080?random" >
+    <v-spacer></v-spacer>  
+      <v-app-bar-title @click="goHome" class="text-center" style="cursor: pointer;"> YOUTHVISION </v-app-bar-title>
+    <v-spacer></v-spacer>  
 
-    <template v-slot:prepend>
-      <!-- <v-btn icon="mdi-dots-vertical">
-    <template v-slot:append>
-      <UserList></UserList>
-      
-    </template>
-  </v-btn> -->
-    </template>
+    <template v-slot:prepend> </template>
     <template v-slot:append>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     </template>
@@ -100,9 +77,6 @@
         @click="$router.push({ path: '/boardlist' })"
       ></v-list-item>
     </v-list>
-    <v-list-item>
-      <Map></Map>
-    </v-list-item>
 
     <v-list-item-action start>
       <v-spacer></v-spacer>
@@ -149,21 +123,26 @@ import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import UserList from "@/components/UserList.vue";
-import Map from "@/components/Map.vue";
 import axios from "axios";
 
 const store = useStore();
 const router = useRouter();
 
 const currentConnection = computed(
-  () => store.getters["socketStore/currentConnection"]
+  function(){return [];}  
+//() => store.getters["socketStore/currentConnection"]
 );
 const currentUserList = computed(
-  () => store.getters["socketStore/currentUserList"]
+  function(){return [];}  
+  //() => store.getters["socketStore/currentUserList"]
 );
-const currentLogin = computed(() => store.getters["socketStore/currentLogin"]);
+const currentLogin = computed(
+  function(){return [];}  
+  //() => store.getters["socketStore/currentLogin"]
+);
 const currentUserInfo = computed(
-  () => store.getters["socketStore/currentUserInfo"]
+  function(){return [];}  
+  //() => store.getters["socketStore/currentUserInfo"]
 );
 const loginInfo = ref({ church: "", nickname: "" });
 
@@ -180,18 +159,19 @@ const rules = {
 const submit = async function (event) {
   const results = await event;
   if (results.valid) {
-    store.dispatch("socketStore/doLogin", loginInfo.value);
+    //store.dispatch("socketStore/doLogin", loginInfo.value);
     axios.post("/api/user/login", loginInfo.value);
   }
 };
 const logout = () => {
-  store.dispatch("socketStore/doLogout");
+  //store.dispatch("socketStore/doLogout");
 };
 
 const dialogActive = ref(false);
 const answer = ref("");
 const loginAdminHint = computed(
-  () => store.getters["socketStore/loginAdminHint"]
+  function(){return [];}
+  //() => store.getters["socketStore/loginAdminHint"]
 );
 const loginAdmin = () => {
   store.dispatch("socketStore/adminPage", {
