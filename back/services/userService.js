@@ -8,6 +8,8 @@ module.exports = (app) => {
     app.get('/api/user/campAply', (req, res) => {
         db.getList('campAply', 'selectCampAply', req.body)
             .then(function (row) {
+                // res.setHeader('Content-Type', 'application/json');
+                // res.end(JSON.stringify(row));
                 res.status(200).json(row);
             })
             .catch(err => {
@@ -64,13 +66,13 @@ module.exports = (app) => {
 
     app.get('/api/user/youtube/playlistItems', async (req, res) => {
         var yearVideoId = {
-            '2024w':'PLZgf7s2LDEysMLmAVR_kMhyVtbfLEcnNx', 
-            '2023s':'PLZgf7s2LDEyvchDDrCA9GgHcut3A8n9PH',
-            '2023w':'PLZgf7s2LDEyvJEpb54f9v3Acqw9Q6mcC7',
-            '2022s':'PLZgf7s2LDEysLGvp02ZHSzxCwc9DiGNuO',
+            '2024w': 'PLZgf7s2LDEysMLmAVR_kMhyVtbfLEcnNx',
+            '2023s': 'PLZgf7s2LDEyvchDDrCA9GgHcut3A8n9PH',
+            '2023w': 'PLZgf7s2LDEyvJEpb54f9v3Acqw9Q6mcC7',
+            '2022s': 'PLZgf7s2LDEysLGvp02ZHSzxCwc9DiGNuO',
         }
-        var {year, cnt} = req.query;
-        
+        var { year, cnt } = req.query;
+
         service.playlistItems.list({
             key: 'AIzaSyCwH_L35xEqEB0MqOPd6hrmlAkTNLVKueo',
             part: 'snippet',
@@ -93,7 +95,7 @@ module.exports = (app) => {
                     // console.log(item)
                 }
             }
-            res.status(200).json({list, totalCnt:response.data.pageInfo.totalResults});
+            res.status(200).json({ list, totalCnt: response.data.pageInfo.totalResults });
         })
     })
 

@@ -43,15 +43,15 @@ app.config.globalProperties.$filters = {
     }
 }
 
-import { socketStore } from '@/modules/socketStore';
-import { mapStore } from '@/modules/mapStore';
+//import { socketStore } from '@/modules/socketStore';
+//import { mapStore } from '@/modules/mapStore';
 import { Socket } from '@/modules/socketService';
 import createWebSocketPlugin from '@/modules/plugin';
 const socket = new Socket();
 
 const plugin = createWebSocketPlugin(socket)
 const store = createStore({
-    modules: { socketStore, mapStore },
+    modules: {  },
     plugins: [plugin],
 });
 

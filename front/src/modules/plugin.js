@@ -2,31 +2,31 @@ export default function createWebSocketPlugin(socket) {
     return store => {
         var data = null;
         if (data = window.localStorage.getItem("isLogin")) {
-            store.commit("socketStore/login", JSON.parse(data));
+            //store.commit("socketStore/login", JSON.parse(data));
             
             socket.emit('login', JSON.parse(data), function (data) {
-                store.commit("socketStore/login", data);
+                //store.commit("socketStore/login", data);
                 window.localStorage.setItem("isLogin", JSON.stringify(data));
             });
         }
 
         socket.on("connect", () => {
-            store.dispatch("socketStore/onConnect");
+            //store.dispatch("socketStore/onConnect");
         })
         socket.on('disconnect', () => {
-            store.dispatch("socketStore/onDisconnect");
+            //store.dispatch("socketStore/onDisconnect");
         });
         socket.on('userList', (data) => {
-            store.dispatch("socketStore/setUserList", data);
-            store.dispatch("mapStore/setUserList", data);
+            //store.dispatch("socketStore/setUserList", data);
+            //store.dispatch("mapStore/setUserList", data);
         })
         socket.on('socketData', (data) => {
             console.log('socketData', data);
-            store.dispatch("socketStore/addSocketData", data);
+            //store.dispatch("socketStore/addSocketData", data);
         })
         socket.on('from server drawMsg', (data) => {
-            store.dispatch("mapStore/drawMsg", data);
-            store.dispatch("socketStore/addSocketData", data);
+            //store.dispatch("mapStore/drawMsg", data);
+            //store.dispatch("socketStore/addSocketData", data);
         })
 
         socket.on('from server drawLocation', (data) => {
@@ -53,7 +53,7 @@ export default function createWebSocketPlugin(socket) {
             // console.log(action.payload)
             if (action.type === 'socketStore/doLogin') {
                 socket.emit('login', action.payload, function (data) {
-                    store.commit("socketStore/login", data);
+                    //store.commit("socketStore/login", data);
                     window.localStorage.setItem("isLogin", JSON.stringify(data));
                 });
             }
