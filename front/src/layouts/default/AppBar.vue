@@ -1,9 +1,9 @@
 <template>
   <v-app-bar scroll-behavior="fade-image" image="https://picsum.photos/1920/1080?random" >
     <v-spacer></v-spacer>  
-      <v-app-bar-title @click="goHome" class="text-center" style="cursor: pointer;"> YOUTHVISION </v-app-bar-title>
+      <v-app-bar-title @click="goHome" class="text-center text-overline" style="cursor: pointer;"> YOUTHVISION </v-app-bar-title>
     <v-spacer></v-spacer>  
-
+{{firebaseData}}
     <template v-slot:prepend> </template>
     <template v-slot:append>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -98,7 +98,7 @@
                 ref="myinput"
                 v-model="answer"
                 label="답은?"
-                :hint="loginAdminHint"
+                hint="예수가"
                 required
                 :rules="[rules.required]"
                 append-icon="mdi-send"
@@ -120,12 +120,12 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "vuex";
+//import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import UserList from "@/components/UserList.vue";
+//import UserList from "@/components/UserList.vue";
 import axios from "axios";
 
-const store = useStore();
+//const store = useStore();
 const router = useRouter();
 
 const currentConnection = computed(
@@ -174,13 +174,15 @@ const loginAdminHint = computed(
   //() => store.getters["socketStore/loginAdminHint"]
 );
 const loginAdmin = () => {
-  store.dispatch("socketStore/adminPage", {
+/*
+	store.dispatch("socketStore/adminPage", {
     answer: answer.value,
     successCallback: function () {
       router.push({ path: "/admin" });
       dialogActive.value = false;
     },
   });
+*/
 };
 const goHome = () => {
   router.push({ path: "/" });
@@ -198,9 +200,12 @@ export default {
   name: "App",
   components: {},
   data() {
-    return { drawer: null };
+    return { drawer: null , firebaseData: {data:'init'}};
   },
-  created() {},
+  created() {
+	this.$writeData('test',{no: 1, name:'테스트입니다.'});
+	this.$readData('test',(val)=>{this.firebaseData = val;});
+  },
   watch: {
     $route: function (to, from) {
       console.log("$route to: ", to);

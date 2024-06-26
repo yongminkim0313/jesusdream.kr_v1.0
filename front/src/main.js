@@ -12,6 +12,7 @@ import App from './App.vue'
 
 import axios from 'axios';
 import { createStore } from 'vuex';
+import { v4 } from 'uuid';
 
 // Composables
 import VueCookies from "vue-cookies";
@@ -23,7 +24,7 @@ const app = createApp(App).use(VueCookies, {
     expireTimes: "10d",
     secure: true,
 }).use( CKEditor )
-
+app.use(VueCookies);
 app.config.globalProperties.$axios = axios
 app.config.globalProperties.$filters = {
     formatDate(value) {
@@ -43,20 +44,62 @@ app.config.globalProperties.$filters = {
     }
 }
 
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getAuth } from "firebase/auth";
+// TODO: Replace the following with your app's Firebase project configuration
+// See: https://firebase.google.com/docs/web/learn-more#config-object
+const firebaseConfig = {
+  // ...
+  // The value of `databaseURL` depends on the location of the database
+  databaseURL: "https://jesusdream-3fd59-default-rtdb.firebaseio.com",
+};
+
+// Initialize Firebase
+const fireapp = initializeApp(firebaseConfig);
+
+
+// Initialize Realtime Database and get a reference to the service
+const database = getDatabase(fireapp);
+
+
+function writeData(key, val) {
+  const db = getDatabase();
+  set(ref(db, key), val);
+}
+
+app.config.globalProperties.$writeData = writeData;
+
+
+function readData(key, callback) {
+	const db = getDatabase();
+
+	return onValue(ref(db, key), (snapshot) => {
+		callback(snapshot.val());
+	});
+}
+
+app.config.globalProperties.$readData = readData;
+
+if(!Vue.$cookies.get('tmpr_cookie')) Vue.$cookies.set('tmpr_cookie',v4(),0, null, null, null, 'Strict');
+  if(!Vue.$cookies.get('prmanent_cookie')) Vue.$cookies.set('prmanent_cookie',v4(), 60 * 60 * 24 * 365, null, null, null, 'Strict');
+  
+
 //import { socketStore } from '@/modules/socketStore';
 //import { mapStore } from '@/modules/mapStore';
-import { Socket } from '@/modules/socketService';
-import createWebSocketPlugin from '@/modules/plugin';
-const socket = new Socket();
+//import { Socket } from '@/modules/socketService';
+//import createWebSocketPlugin from '@/modules/plugin';
+//const socket = new Socket();
 
-const plugin = createWebSocketPlugin(socket)
-const store = createStore({
-    modules: {  },
-    plugins: [plugin],
-});
+//const plugin = createWebSocketPlugin(socket)
+//const store = createStore({
+//    modules: {  },
+//    plugins: [plugin],
+//});
 
-socket.connect()
+//socket.connect()
 
 registerPlugins(app)
 
-app.use(store).mount('#app')
+//app.use(store).mount('#app')
+app.mount('#app')

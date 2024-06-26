@@ -1,6 +1,10 @@
 <template>
-  
   <v-card class="mx-auto" elevation="5">
+    <v-card-actions>
+	<v-spacer></v-spacer>
+	<v-btn><a href="https://youthvision.modoo.at/?link=cj2lafx4">유스비전 공식페이지</a></v-btn>
+	<v-spacer></v-spacer> 
+	</v-card-actions>
     <v-card-title>2024 여름 YOUTHVISION CAMP</v-card-title>
     <v-card-subtitle>"다음세대들이여 성령의 바람을 일으켜라 24.8.6~8"</v-card-subtitle>
     <div id="area">
@@ -16,24 +20,23 @@
       ></iframe>
     </div>
   </v-card>
-  <BoardList ref="boardlist"/>
-  <YoutubeList></YoutubeList>
+  <v-card>
+   <v-img src="@/assets/2024_summer.jpeg" />
+  	<v-img src="@/assets/2024_summer1.jpeg" />
+  	<v-img src="@/assets/2024_summer2.jpeg" />
+  	<v-img src="@/assets/2024_summer3.jpeg" />
+  	<v-img src="@/assets/2024_summer4.jpeg" />
+  </v-card>
 </template>
 
 <script setup>
-import BoardList from "@/components/BoardList.vue";
-import YoutubeList from "@/components/YoutubeList.vue";
+//import BoardList from "@/components/BoardList.vue";
+//import YoutubeList from "@/components/YoutubeList.vue";
 
 
-import axios from "axios";
-import { computed, onMounted, ref } from "vue";
-import { useStore } from "vuex";
+//import axios from "axios";
+//import { computed, onMounted, ref } from "vue";
 
-const testText = ref("testText");
-const store = useStore();
-const currentUserList = computed(
-  () => store.getters["socketStore/currentUserList"]
-);
 // axios.get("/api/public/upload/9db4e216aea5e6db34aef57e26ea9cce")
 // .then(({ data }) => {
 //     console.log(data.msg);

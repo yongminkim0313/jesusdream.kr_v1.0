@@ -99,6 +99,7 @@ export default {
       this.showCount = sc;
     }
     this.getBoardList();
+		
   },
   beforeCreate: function () {
     console.log("beforCreate");
