@@ -20,11 +20,13 @@ import VueCookies from "vue-cookies";
 import { createApp } from 'vue'
 import CKEditor from '@ckeditor/ckeditor5-vue';
 
-const app = createApp(App).use(VueCookies, {
-    expireTimes: "10d",
-    secure: true,
-}).use( CKEditor )
-app.use(VueCookies);
+const app = createApp(App)
+	.use(VueCookies, {
+    	expireTimes: "10d",
+    	secure: true,
+	})
+	.use( CKEditor )
+
 app.config.globalProperties.$axios = axios
 app.config.globalProperties.$filters = {
     formatDate(value) {
@@ -81,8 +83,24 @@ function readData(key, callback) {
 
 app.config.globalProperties.$readData = readData;
 
-if(!Vue.$cookies.get('tmpr_cookie')) Vue.$cookies.set('tmpr_cookie',v4(),0, null, null, null, 'Strict');
-  if(!Vue.$cookies.get('prmanent_cookie')) Vue.$cookies.set('prmanent_cookie',v4(), 60 * 60 * 24 * 365, null, null, null, 'Strict');
+function onFirebase (callback) {
+  const db = getDatabase();
+  const connectedRef = ref(db, ".info/connected");
+  onValue(connectedRef, (snap) => {
+    if (snap.val() === true) {
+      console.log("connected");
+		callback("connected");
+    } else {
+      console.log("not connected");
+		callback("disconnected");
+    }
+  });
+}
+
+app.config.globalProperties.$onFirebase = onFirebase;
+
+//if(!app.$cookies.get('tmpr_cookie')) app.$cookies.set('tmpr_cookie',v4(),60 * 60 * 1, null, null, null, 'Strict');
+//if(!app.$cookies.get('prmanent_cookie')) app.$cookies.set('prmanent_cookie',v4(), 60 * 60 * 24 * 365, null, null, null, 'Strict');
   
 
 //import { socketStore } from '@/modules/socketStore';
