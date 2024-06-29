@@ -3,8 +3,6 @@
     <v-spacer></v-spacer>  
       <v-app-bar-title @click="goHome" class="text-center text-overline" style="cursor: pointer;"> YOUTHVISION </v-app-bar-title>
     <v-spacer></v-spacer>  
-{{firebaseData}}
-{{connect}}
     <template v-slot:prepend> </template>
     <template v-slot:append>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -201,12 +199,13 @@ export default {
   name: "App",
   components: {},
   data() {
-    return { drawer: null , firebaseData: {data:'init'}, connect: ''};
+    return { drawer: null , connect: ''};
   },
   created() {
-	this.$writeData('test',{no: 1, name:'테스트입니다.'});
-	this.$readData('test',(val)=>{this.firebaseData = val;});
+	//this.$writeData('test',{no: 1, name:'테스트입니다.'});
+	//this.$readData('test',(val)=>{this.firebaseData = val;});
 	this.$onFirebase((val)=>{this.connect = val;});
+  this.$authFirebase((user)=>{console.log(user);});
   },
   watch: {
     $route: function (to, from) {
